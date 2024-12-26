@@ -24,11 +24,8 @@ namespace CWDocMgr.Controllers
             var user = HttpContext.User.Identities.ToArray()[0];
             if (!user.IsAuthenticated)
             {
-                //return RedirectToAction("login", "account");
                 return Redirect("/Identity/Account/Login");
             }
-
-
 
             IEnumerable<DocumentModel> documents = _documentService.GetDocuments();
 
