@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Principal;
 using CWDocMgr.Data;
 using CWDocMgr.Models;
 using CWDocMgr.Services;
@@ -20,6 +21,15 @@ namespace CWDocMgr.Controllers
 
         public IActionResult Index()
         {
+            var user = HttpContext.User.Identities.ToArray()[0];
+            if (!user.IsAuthenticated)
+            {
+                //return RedirectToAction("login", "account");
+                return Redirect("/Identity/Account/Login");
+            }
+
+
+
             IEnumerable<DocumentModel> documents = _documentService.GetDocuments();
 
             IndexViewModel indexViewModel = new IndexViewModel
