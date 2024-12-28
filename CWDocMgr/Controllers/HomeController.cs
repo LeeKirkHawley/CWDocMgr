@@ -19,7 +19,7 @@ namespace CWDocMgr.Controllers
             _documentService = documentService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 10)
         {
             var user = HttpContext.User.Identities.ToArray()[0];
             if (!user.IsAuthenticated)
@@ -27,11 +27,14 @@ namespace CWDocMgr.Controllers
                 return Redirect("/Identity/Account/Login");
             }
 
-            IEnumerable<DocumentModel> documents = _documentService.GetDocuments();
+            int totalDocuments = _documentService.GetTotalDocuments();
+            IEnumerable<DocumentModel> documents = _documentService.GetDocuments(page, pageSize);
 
             IndexViewModel indexViewModel = new IndexViewModel
             {
-                Documents = documents
+                Documents = documents,
+                PageNumber = page,
+                TotalPages = totalDocuments / pageSize
             };
 
 

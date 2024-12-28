@@ -16,10 +16,17 @@ namespace CWDocMgr.Services
             _applicationDbContext = applicationDbContext;
         }
 
-        public IEnumerable<DocumentModel> GetDocuments() 
+        public IEnumerable<DocumentModel> GetDocuments(int page, int pageSize) 
         {
-            List<DocumentModel> docList = _applicationDbContext.Documents.ToList();
+            // get paginated Documents      
+            List<DocumentModel> docList = _applicationDbContext.Documents.Skip((page - 1) * pageSize).Take(pageSize).ToList();
             return docList;
+        }
+
+        public int GetTotalDocuments()
+        {
+            // get the total number of documents in the Documents table
+            return _applicationDbContext.Documents.Count();
         }
     }
 }

@@ -4,7 +4,10 @@
     {
         public IndexViewModel() { }
 
-        public IEnumerable<DocumentModel>? Documents { get; set; } 
+        public IEnumerable<DocumentModel>? Documents { get; set; }
+
+        public int TotalPages;
+        public int PageNumber;
 
         //public List<DocumentModel> Documents = new List<DocumentModel>{
         //    new DocumentModel {
