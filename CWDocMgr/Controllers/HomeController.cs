@@ -34,7 +34,7 @@ namespace CWDocMgr.Controllers
             {
                 Documents = documents,
                 PageNumber = page,
-                TotalPages = totalDocuments / pageSize
+                TotalPages = totalDocuments / pageSize + 1
             };
 
 
