@@ -1,6 +1,7 @@
 ﻿using CWDocMgr.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace CWDocMgr.Data
 {
@@ -17,8 +18,11 @@ namespace CWDocMgr.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            string sqLiteDbPath = _settings["SQLiteDbPath"];
-            options.UseSqlite($"Data Source={sqLiteDbPath}");
+            if (!options.IsConfigured)
+            {
+                string sqLiteDbPath = _settings["SQLiteDbPath"];
+                options.UseSqlite($"Data Source={sqLiteDbPath}");
+            }
         }
 
     }
