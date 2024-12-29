@@ -15,15 +15,5 @@ namespace CWDocMgr.Data
         {
             _settings = settings;
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            if (!options.IsConfigured)
-            {
-                string sqLiteDbPath = _settings["SQLiteDbPath"];
-                options.UseSqlite($"Data Source={sqLiteDbPath}");
-            }
-        }
-
     }
 }
