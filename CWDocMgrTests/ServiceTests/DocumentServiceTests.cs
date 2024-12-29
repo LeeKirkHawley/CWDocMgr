@@ -71,6 +71,51 @@ namespace CWDocMgrTests.ServiceTests
             // Assert
             Assert.Equal(3, result);
         }
+
+        [Fact]
+        public void GetDocuments_ReturnsEmptyList_WhenNoDocumentsExist()
+        {
+            // Arrange
+            _dbContext.Documents.RemoveRange(_dbContext.Documents);
+            _dbContext.SaveChanges();
+
+            int page = 1;
+            int pageSize = 2;
+
+            // Act
+            var result = _documentService.GetDocuments(page, pageSize);
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void GetDocuments_ReturnsCorrectDocuments_WhenPageIsOutOfRange()
+        {
+            // Arrange
+            int page = 2;
+            int pageSize = 3;
+
+            // Act
+            var result = _documentService.GetDocuments(page, pageSize);
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void GetTotalDocuments_ReturnsZero_WhenNoDocumentsExist()
+        {
+            // Arrange
+            _dbContext.Documents.RemoveRange(_dbContext.Documents);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = _documentService.GetTotalDocuments();
+
+            // Assert
+            Assert.Equal(0, result);
+        }
     }
 }
 
