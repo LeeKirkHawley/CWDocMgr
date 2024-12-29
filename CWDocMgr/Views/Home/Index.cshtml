@@ -14,29 +14,8 @@
 <a asp-controller="Home" asp-action="UploadDoc" class="btn btn-primary">Upload Document</a>
 <br />
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>User Id</th>
-            <th>Name</th>
-            <th>Original Name</th>
-            <th>Document Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var doc in Model.Documents)
-        {
-            <tr>
-                <td>@doc.Id</td>
-                <td>@doc.UserId</td>
-                <td><a href="@Url.Action("Details", "DocumentModels", new { id = doc.Id })">@doc.DocumentName</a></td>
-                <td>@doc.OriginalDocumentName</td>
-                <td>@doc.DocumentDate</td>
-            </tr>
-        }
-    </tbody>
-</table>
+@Html.PartialAsync("_DocumentTable", Model)
+
 <nav aria-label="Page navigation example">
     <ul class="pagination">
         @for (int i = 1; i <= Model.TotalPages; i++)
@@ -48,9 +27,7 @@
     </ul>
 </nav>
 
-
- <script>
-
+<script>
     function DeleteDoc(id) {
         var del = confirm("Are you sure you want to delete this document?");
         if (!del)
@@ -72,5 +49,4 @@
                 alert(status);
             });
     }
-
 </script>
