@@ -28,5 +28,7 @@ namespace CWDocMgr.Services
             // get the total number of documents in the Documents table
             return _applicationDbContext.Documents.Count();
         }
+
+
     }
 }
