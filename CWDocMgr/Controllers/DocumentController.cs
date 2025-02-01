@@ -10,13 +10,15 @@ using CWDocMgr.Models;
 
 namespace CWDocMgr.Controllers
 {
-    public class DocumentModelsController : Controller
+    public class DocumentController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _settings;
 
-        public DocumentModelsController(ApplicationDbContext context)
+        public DocumentController(ApplicationDbContext context, IConfiguration settings)
         {
             _context = context;
+            _settings = settings;
         }
 
         // GET: DocumentModels
@@ -39,6 +41,9 @@ namespace CWDocMgr.Controllers
             {
                 return NotFound();
             }
+
+            string documentFilePath = Path.Combine(_settings["UploadFilePath"], documentModel.documentName);
+            documentModel.documentName = documentFilePath;
 
             return View(documentModel);
         }
