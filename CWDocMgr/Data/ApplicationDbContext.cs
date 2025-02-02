@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace CWDocMgr.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         private readonly IConfiguration _settings;
         public DbSet<DocumentModel> Documents { get; set; }
