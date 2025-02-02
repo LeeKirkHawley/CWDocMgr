@@ -29,6 +29,30 @@ namespace CWDocMgr.Services
             return _applicationDbContext.Documents.Count();
         }
 
+        public DocumentModel CreateDocument(Microsoft.AspNetCore.Identity.IdentityUser user, string originalFileName, string documentFilePath)
+        {
+
+            DocumentModel newDoc = _applicationDbContext.Documents.Add(new DocumentModel
+            {
+                UserId = user.Id,
+                DocumentName = Path.GetFileName(documentFilePath),
+                OriginalDocumentName = originalFileName,
+                DocumentDate = DateTime.Now.Ticks
+            }).Entity;
+
+            try
+            {
+                _applicationDbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            return newDoc;
+        }
+
+
 
     }
 }

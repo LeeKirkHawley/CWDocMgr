@@ -13,12 +13,12 @@ namespace CWDocMgr.Controllers
     public class DocumentController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _settings;
+        private readonly IConfiguration _configuration;
 
-        public DocumentController(ApplicationDbContext context, IConfiguration settings)
+        public DocumentController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
-            _settings = settings;
+            _configuration = configuration;
         }
 
         // GET: DocumentModels
@@ -42,8 +42,8 @@ namespace CWDocMgr.Controllers
                 return NotFound();
             }
 
-            string documentFilePath = Path.Combine(_settings["UploadFilePath"], documentModel.documentName);
-            documentModel.documentName = documentFilePath;
+            string documentFilePath = Path.Combine(_configuration["UploadFilePath"], documentModel.DocumentName);
+            documentModel.DocumentName = documentFilePath;
 
             return View(documentModel);
         }

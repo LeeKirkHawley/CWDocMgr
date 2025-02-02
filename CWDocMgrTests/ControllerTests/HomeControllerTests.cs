@@ -8,20 +8,36 @@ using CWDocMgr.Models;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using CWDocMgr.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 namespace CWDocMgrTests.ControllerTests
 {
     public class HomeControllerTests
     {
+        private readonly HomeController _controller;
         private readonly Mock<ILogger<HomeController>> _mockLogger;
         private readonly Mock<IDocumentService> _mockDocumentService;
-        private readonly HomeController _controller;
+        private readonly ApplicationDbContext _inMemoryApplicationDbContext;
+        private readonly Mock<IConfiguration> _mockConfiguration;
 
         public HomeControllerTests()
         {
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+            _inMemoryApplicationDbContext = new ApplicationDbContext(null, options);
+
+
             _mockLogger = new Mock<ILogger<HomeController>>();
             _mockDocumentService = new Mock<IDocumentService>();
-            _controller = new HomeController(_mockLogger.Object, _mockDocumentService.Object);
+            _mockConfiguration = new Mock<IConfiguration>();
+
+            _controller = new HomeController(_mockLogger.Object, 
+                _mockDocumentService.Object,
+                _mockConfiguration.Object,
+                _inMemoryApplicationDbContext);
         }
 
         [Fact]
@@ -86,5 +102,24 @@ namespace CWDocMgrTests.ControllerTests
         //    var model = Assert.IsType<ErrorViewModel>(viewResult.Model);
         //    Assert.NotNull(model.RequestId);
         //}
+
+        //private IConfiguration CreateConfiguration()
+        //{
+        //    // https://medium.com/@TheLe0/mocking-your-appsettings-in-unit-tests-on-net-cb057de7db64
+        //    var inMemorySettings = new Dictionary<string, string> {
+        //        {"SQLiteDataContext", "CWDocs"},
+        //        {"SQLiteDbPath", "C:\\Work\\A_My_Websites\\CWDocs\\UnitTests\\CWDocs.db"},
+        //        {"DownloadFilePath", "C:\\Temp"},
+
+        //        //{"SectionName:SomeKey", "SectionValue"},
+        //    };
+
+        //    IConfiguration configuration = new ConfigurationBuilder()
+        //        .AddInMemoryCollection(inMemorySettings)
+        //        .Build();
+
+        //    return configuration;
+        //}
+
     }
 }

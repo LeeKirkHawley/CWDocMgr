@@ -23,8 +23,8 @@ namespace CWDocMgrTests.ServiceTests
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
-
             _dbContext = new ApplicationDbContext(null, options);
+
             _documentService = new DocumentService(_loggerMock.Object, _dbContext);
 
             SeedDatabase();
@@ -36,9 +36,9 @@ namespace CWDocMgrTests.ServiceTests
             {
                 var documents = new List<DocumentModel>
                 {
-                    new DocumentModel { Id = 1, UserId = 1, DocumentName = "Doc1", OriginalDocumentName = "OriginalDoc1", DocumentDate = 20230101 },
-                    new DocumentModel { Id = 2, UserId = 2, DocumentName = "Doc2", OriginalDocumentName = "OriginalDoc2", DocumentDate = 20230102 },
-                    new DocumentModel { Id = 3, UserId = 3, DocumentName = "Doc3", OriginalDocumentName = "OriginalDoc3", DocumentDate = 20230103 }
+                    new DocumentModel { Id = 1, UserId = "xxxx0f9c-183e-41ab-bca4-5104d887aaaa", DocumentName = "bdce0f9c-183e-41ab-bca4-5104d887aaaa.jpg", OriginalDocumentName = "OriginalDoc1", DocumentDate = 20230101 },
+                    new DocumentModel { Id = 2, UserId = "xxxx0f9c-183e-41ab-bca4-5104d887bbbb", DocumentName = "bdce0f9c-183e-41ab-bca4-5104d887bbbb.jpg", OriginalDocumentName = "OriginalDoc2", DocumentDate = 20230102 },
+                    new DocumentModel { Id = 3, UserId = "xxxx0f9c-183e-41ab-bca4-5104d887cccc", DocumentName = "bdce0f9c-183e-41ab-bca4-5104d887cccc.jpg", OriginalDocumentName = "OriginalDoc3", DocumentDate = 20230103 }
                 };
 
                 _dbContext.Documents.AddRange(documents);
@@ -47,7 +47,7 @@ namespace CWDocMgrTests.ServiceTests
         }
 
         [Fact]
-        public void GetDocuments_ReturnsCorrectDocuments()
+        public void GetDocuments_ReturnsCorrectDocuments_Paginated()
         {
             // Arrange
             int page = 1;
@@ -58,8 +58,8 @@ namespace CWDocMgrTests.ServiceTests
 
             // Assert
             Assert.Equal(2, result.Count());
-            Assert.Equal("Doc1", result.First().DocumentName);
-            Assert.Equal("Doc2", result.Last().DocumentName);
+            Assert.Equal("bdce0f9c-183e-41ab-bca4-5104d887aaaa.jpg", result.First().DocumentName);
+            Assert.Equal("bdce0f9c-183e-41ab-bca4-5104d887bbbb.jpg", result.Last().DocumentName);
         }
 
         [Fact]
