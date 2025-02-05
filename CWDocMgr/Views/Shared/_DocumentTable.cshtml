@@ -19,6 +19,11 @@
                 <td><a href="@Url.Action("Details", "Document", new { id = doc.Id })">@doc.DocumentName</a></td>
                 <td>@doc.OriginalDocumentName</td>
                 <td>@doc.DocumentDate</td>
+                <td>
+                    <a asp-controller="Document" asp-action="Edit" asp-route-id="@doc.Id">Edit</a> |
+                    <a asp-controller="Document" asp-action="Details" asp-route-id="@doc.Id">Details</a> |
+                    <a asp-controller="Document" asp-action="Delete" asp-route-id="@doc.Id">Delete</a>
+                </td>
             </tr>
         }
     </tbody>

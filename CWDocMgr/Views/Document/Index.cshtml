@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CWDocMgr.Models.DocumentModel>
+﻿@model IndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,45 +9,16 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DocumentName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OriginalDocumentName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DocumentDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DocumentName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OriginalDocumentName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DocumentDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+@await Html.PartialAsync("~/Views/Shared/_DocumentTable.cshtml")
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

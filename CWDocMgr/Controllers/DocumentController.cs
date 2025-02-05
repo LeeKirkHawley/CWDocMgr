@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CWDocMgr.Data;
 using CWDocMgr.Models;
+using CWDocMgr.Services;
 
 namespace CWDocMgr.Controllers
 {
@@ -14,17 +15,26 @@ namespace CWDocMgr.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IDocumentService _documentService;
 
-        public DocumentController(ApplicationDbContext context, IConfiguration configuration)
+        public DocumentController(ApplicationDbContext context, IConfiguration configuration, 
+            IDocumentService documentService)
         {
             _context = context;
             _configuration = configuration;
+            _documentService = documentService;
         }
 
         // GET: DocumentModels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Documents.ToListAsync());
+            IndexViewModel indexViewModel = new IndexViewModel
+            {
+                Documents = await _context.Documents.ToListAsync(),
+                TotalPages = _documentService.GetTotalDocuments(),
+                PageNumber = 0
+            };
+            return View(indexViewModel);
         }
 
         // GET: DocumentModels/Details/5
