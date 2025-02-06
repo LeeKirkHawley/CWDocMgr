@@ -52,7 +52,7 @@ namespace CWDocMgr.Controllers
                 return NotFound();
             }
 
-            string documentFilePath = Path.Combine(_configuration["UploadFilePath"], documentModel.DocumentName);
+            string documentFilePath = _configuration["ClientDocumentStorePath"] + "/" + documentModel.DocumentName;
             documentModel.DocumentName = documentFilePath;
 
             return View(documentModel);

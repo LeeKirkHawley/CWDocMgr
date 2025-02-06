@@ -106,12 +106,12 @@ namespace CWDocMgr.Controllers
             var originalFileName = System.IO.Path.GetFileName(files[0].FileName);
             string imageFileExtension = Path.GetExtension(originalFileName);
 
-            var fileName = Guid.NewGuid().ToString();
+            var fileName = Guid.NewGuid().ToString() + imageFileExtension;
 
             // set up the document file (input) path
-            var webRootPath = _configuration["WebRootPath"];
-            string documentFilePath = Path.Combine(webRootPath, _configuration["DownloadFilePath"], fileName);
-            documentFilePath += imageFileExtension;
+            //var webRootPath = _configuration["WebRootPath"];
+            string documentFilePath = Path.Combine(_configuration["ServerDocumentStorePath"], fileName);
+            //documentFilePath += imageFileExtension;
 
             // If file with same name exists
             if (System.IO.File.Exists(documentFilePath))
