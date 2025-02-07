@@ -1,6 +1,6 @@
 ﻿@model IndexViewModel
 
-<table class="table">
+<table class="table document-table">
     <thead>
         <tr>
             <th>Id</th>
@@ -13,7 +13,7 @@
     <tbody>
         @foreach (var doc in Model.Documents)
         {
-            <tr>
+            <tr class="document-table">
                 <td>@doc.Id</td>
                 <td>@doc.UserId</td>
                 <td><a href="@Url.Action("Details", "Document", new { id = doc.Id })">@doc.DocumentName</a></td>
