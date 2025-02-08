@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CWDocMgr.Data;
 using CWDocMgr.Models;
@@ -16,13 +11,15 @@ namespace CWDocMgr.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IDocumentService _documentService;
+        private readonly ILogger<DocumentController> _logger;
 
         public DocumentController(ApplicationDbContext context, IConfiguration configuration, 
-            IDocumentService documentService)
+            IDocumentService documentService, ILogger<DocumentController> logger)
         {
             _context = context;
             _configuration = configuration;
             _documentService = documentService;
+            _logger = logger;
         }
 
         // GET: DocumentModels
@@ -161,6 +158,18 @@ namespace CWDocMgr.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            string documentFilePath = Path.Combine(_configuration["ServerDocumentStorePath"], documentModel.DocumentName);
+            if (System.IO.File.Exists(documentFilePath))
+            {
+                _logger.LogInformation($"Deleting file {documentFilePath}");
+                System.IO.File.Delete(documentFilePath);
+            }
+            else
+            {
+                _logger.LogDebug($"Failed to delete file {documentFilePath}");
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
