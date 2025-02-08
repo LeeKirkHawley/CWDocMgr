@@ -1,6 +1,5 @@
 ﻿using CWDocMgr.Data;
 using CWDocMgr.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CWDocMgr.Services
@@ -75,15 +74,6 @@ namespace CWDocMgr.Services
             {
                 _logger.LogDebug($"Failed to delete file {documentFilePath}");
             }
-
-
-
-            //DocumentModel doc = _applicationDbContext.Documents.Find(id);
-            //if (doc != null)
-            //{
-            //    _applicationDbContext.Documents.Remove(doc);
-            //    _applicationDbContext.SaveChanges();
-            //}
         }
 
         public void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, ClaimsPrincipal User)
@@ -99,19 +89,6 @@ namespace CWDocMgr.Services
 
             foreach (var file in files)
             {
-                //string fileName = "";
-                //try
-                //{
-                //    fileName = $"{files[0].FileName}";
-                //}
-                //catch (Exception ex)
-                //{
-                //    _logger.LogDebug(ex, "Exception reading file name.");
-                //}
-
-                //_logger.LogInformation($"Thread {Thread.CurrentThread.ManagedThreadId}: Processing file {file}");
-
-
                 // Extract file name from whatever was posted by browser
                 var originalFileName = System.IO.Path.GetFileName(file.FileName);
                 string imageFileExtension = Path.GetExtension(originalFileName);
@@ -119,9 +96,7 @@ namespace CWDocMgr.Services
                 var fileName = Guid.NewGuid().ToString() + imageFileExtension;
 
                 // set up the document file (input) path
-                //var webRootPath = _configuration["WebRootPath"];
                 string documentFilePath = Path.Combine(_configuration["ServerDocumentStorePath"], fileName);
-                //documentFilePath += imageFileExtension;
 
                 // If file with same name exists
                 if (System.IO.File.Exists(documentFilePath))

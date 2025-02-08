@@ -1,11 +1,7 @@
-using System.Diagnostics;
-using System.Security.Claims;
-using System.Security.Principal;
 using CWDocMgr.Data;
 using CWDocMgr.Models;
 using CWDocMgr.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CWDocMgr.Controllers
 {
