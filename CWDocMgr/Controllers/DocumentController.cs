@@ -55,28 +55,6 @@ namespace CWDocMgr.Controllers
             return View(documentModel);
         }
 
-        // GET: DocumentModels/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: DocumentModels/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,DocumentName,OriginalDocumentName,DocumentDate")] DocumentModel documentModel)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(documentModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(documentModel);
-        }
-
         // GET: DocumentModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
