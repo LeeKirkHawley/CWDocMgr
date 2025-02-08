@@ -1,4 +1,5 @@
 ﻿using CWDocMgr.Models;
+using System.Security.Claims;
 
 namespace CWDocMgr.Services
 {
@@ -8,5 +9,9 @@ namespace CWDocMgr.Services
         int GetTotalDocuments();
 
         DocumentModel CreateDocument(Microsoft.AspNetCore.Identity.IdentityUser user, string originalFileName, string documentFilePath);
+
+        void DeleteDocument(int id);
+
+        void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, ClaimsPrincipal User);
     }
 }

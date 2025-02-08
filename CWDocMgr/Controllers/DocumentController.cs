@@ -151,24 +151,7 @@ namespace CWDocMgr.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var documentModel = await _context.Documents.FindAsync(id);
-            if (documentModel != null)
-            {
-                _context.Documents.Remove(documentModel);
-            }
-
-            await _context.SaveChangesAsync();
-
-            string documentFilePath = Path.Combine(_configuration["ServerDocumentStorePath"], documentModel.DocumentName);
-            if (System.IO.File.Exists(documentFilePath))
-            {
-                _logger.LogInformation($"Deleting file {documentFilePath}");
-                System.IO.File.Delete(documentFilePath);
-            }
-            else
-            {
-                _logger.LogDebug($"Failed to delete file {documentFilePath}");
-            }
+            _documentService.DeleteDocument(id);
 
             return RedirectToAction(nameof(Index));
         }
