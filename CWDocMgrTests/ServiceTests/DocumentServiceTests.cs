@@ -2,6 +2,7 @@
 using CWDocMgr.Models;
 using CWDocMgr.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
@@ -15,17 +16,19 @@ namespace CWDocMgrTests.ServiceTests
         private readonly Mock<ILogger<DocumentService>> _loggerMock;
         private readonly ApplicationDbContext _dbContext;
         private readonly DocumentService _documentService;
+        private readonly Mock<IConfiguration> _configuration;
 
         public DocumentServiceTests()
         {
             _loggerMock = new Mock<ILogger<DocumentService>>();
-
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
             _dbContext = new ApplicationDbContext(null, options);
+            _configuration = new Mock<IConfiguration>();
 
-            _documentService = new DocumentService(_loggerMock.Object, _dbContext);
+            _documentService = new DocumentService(_loggerMock.Object, _dbContext, _configuration.Object);
+
 
             SeedDatabase();
         }

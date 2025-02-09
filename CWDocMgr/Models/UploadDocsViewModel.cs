@@ -1,6 +1,6 @@
 ﻿namespace CWDocMgr.Models
 {
-    public class UploadDocsViewModel
+    public record UploadDocsViewModel
     {
         public string OriginalFileName { get; set; }
     }
