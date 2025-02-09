@@ -3,22 +3,21 @@
 <table class="table document-table">
     <thead>
         <tr>
-            <th>Id</th>
-            <th>User Id</th>
-            <th>Name</th>
             <th>Original Name</th>
-            <th>Document Date</th>
+            <th>User</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var doc in Model.Documents)
         {
             <tr class="document-table">
-                <td>@doc.Id</td>
-                <td>@doc.UserId</td>
-                <td><a href="@Url.Action("Details", "Document", new { id = doc.Id })">@doc.DocumentName</a></td>
                 <td>@doc.OriginalDocumentName</td>
-                <td>@doc.DocumentDate</td>
+                <td>@doc.User.UserName</td>
+                <td><a href="@Url.Action("Details", "Document", new { id = doc.Id })">@doc.DocumentName</a></td>
+                <td>@doc.Date</td>
                 <td>
                     <a asp-controller="Document" asp-action="Edit" asp-route-id="@doc.Id">Edit</a> |
                     <a asp-controller="Document" asp-action="Details" asp-route-id="@doc.Id">Details</a> |

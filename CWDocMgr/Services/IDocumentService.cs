@@ -13,5 +13,7 @@ namespace CWDocMgr.Services
         void DeleteDocument(int id);
 
         void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, ClaimsPrincipal User);
+
+        void FillDocDateStrings(IEnumerable<DocumentModel> docList);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CWDocMgr.Data;
 using CWDocMgr.Models;
+using Humanizer;
 using System.Security.Claims;
 
 namespace CWDocMgr.Services
@@ -18,11 +19,23 @@ namespace CWDocMgr.Services
             _configuration = configuration;
         }
 
-        public IEnumerable<DocumentModel> GetDocuments(int page, int pageSize) 
+        public IEnumerable<DocumentModel> GetDocuments(int page, int pageSize)
         {
             // get paginated Documents      
             List<DocumentModel> docList = _applicationDbContext.Documents.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            FillDocDateStrings(docList);
+
             return docList;
+        }
+
+        public void FillDocDateStrings(IEnumerable<DocumentModel> docList)
+        {
+            foreach (DocumentModel doc in docList)
+            {
+                var documentDateTime = DateTime.FromBinary(doc.DocumentDate);
+                doc.Date = documentDateTime.ToString("MM/dd/yyyy");
+            }
         }
 
         public int GetTotalDocuments()

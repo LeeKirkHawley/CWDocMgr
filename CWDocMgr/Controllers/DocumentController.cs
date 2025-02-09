@@ -25,12 +25,19 @@ namespace CWDocMgr.Controllers
         // GET: DocumentModels
         public async Task<IActionResult> Index()
         {
+            System.Security.Claims.ClaimsIdentity user = HttpContext.User.Identities.ToArray()[0];
+
             IndexViewModel indexViewModel = new IndexViewModel
             {
-                Documents = await _context.Documents.ToListAsync(),
+                Documents = await _context.Documents
+                    .Include(d => d.User)
+                    .ToListAsync(),
                 TotalPages = _documentService.GetTotalDocuments(),
                 PageNumber = 0
             };
+
+            _documentService.FillDocDateStrings(indexViewModel.Documents);
+
             return View(indexViewModel);
         }
 
