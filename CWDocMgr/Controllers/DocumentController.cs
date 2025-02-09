@@ -55,6 +55,32 @@ namespace CWDocMgr.Controllers
             return View(documentModel);
         }
 
+        [HttpGet]
+        public IActionResult UploadDoc()
+        {
+
+            var user = HttpContext.User.Identities.ToArray()[0];
+            if (!user.IsAuthenticated)
+            {
+                return RedirectToAction("login", "account");
+            }
+
+            UploadDocsViewModel model = new UploadDocsViewModel();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult UploadDoc(UploadDocsViewModel model, IFormFile[] files)
+        {
+            _documentService.UploadDocuments(model, files, HttpContext.User);
+
+            // redirect to home page
+            return Redirect("/Document");
+        }
+
+
+
         // GET: DocumentModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

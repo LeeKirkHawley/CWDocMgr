@@ -50,29 +50,29 @@ namespace CWDocMgr.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult UploadDoc()
-        {
+        //[HttpGet]
+        //public IActionResult UploadDoc()
+        //{
 
-            var user = HttpContext.User.Identities.ToArray()[0];
-            if (!user.IsAuthenticated)
-            {
-                return RedirectToAction("login", "account");
-            }
+        //    var user = HttpContext.User.Identities.ToArray()[0];
+        //    if (!user.IsAuthenticated)
+        //    {
+        //        return RedirectToAction("login", "account");
+        //    }
 
-            UploadDocsViewModel model = new UploadDocsViewModel();
+        //    UploadDocsViewModel model = new UploadDocsViewModel();
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
 
-        [HttpPost]
-        public ActionResult UploadDoc(UploadDocsViewModel model, IFormFile[] files)
-        {
-            _documentService.UploadDocuments(model, files, HttpContext.User);
+        //[HttpPost]
+        //public ActionResult UploadDoc(UploadDocsViewModel model, IFormFile[] files)
+        //{
+        //    _documentService.UploadDocuments(model, files, HttpContext.User);
 
-            // redirect to home page
-            return Redirect("/");
-        }
+        //    // redirect to home page
+        //    return Redirect("/");
+        //}
 
 
 
