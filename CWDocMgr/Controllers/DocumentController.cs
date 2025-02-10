@@ -6,6 +6,7 @@ using CWDocMgr.Services;
 
 namespace CWDocMgr.Controllers
 {
+    [ApiController]
     public class DocumentController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,6 +24,7 @@ namespace CWDocMgr.Controllers
         }
 
         // GET: DocumentModels
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             System.Security.Claims.ClaimsIdentity user = HttpContext.User.Identities.ToArray()[0];
@@ -42,6 +44,7 @@ namespace CWDocMgr.Controllers
         }
 
         // GET: DocumentModels/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -89,6 +92,7 @@ namespace CWDocMgr.Controllers
 
 
         // GET: DocumentModels/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -140,6 +144,7 @@ namespace CWDocMgr.Controllers
         }
 
         // GET: DocumentModels/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -167,6 +172,42 @@ namespace CWDocMgr.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // POST: DocumentModels/OCR/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpGet, ActionName("Ocr")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Ocr(int id, [Bind("Id,UserId,DocumentName,OriginalDocumentName,DocumentDate")] DocumentModel documentModel)
+        {
+            if (id != documentModel.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(documentModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DocumentModelExists(documentModel.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(documentModel);
+        }
+
+        [NonAction]
         private bool DocumentModelExists(int id)
         {
             return _context.Documents.Any(e => e.Id == id);

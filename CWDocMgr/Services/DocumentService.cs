@@ -149,10 +149,10 @@ namespace CWDocMgr.Services
             }
         }
 
-        void OcrFile()
+        public void OcrFile(DocumentModel documentModel)
         {
-            //var doesFileExist = System.IO.File.Exists(documentFilePath);
-            //string errorMsg = "";
+            var doesFileExist = System.IO.File.Exists(documentModel.DocumentName);
+            string errorMsg = "";
 
             //if (imageFileExtension.ToLower() == ".pdf") {
             //    await _ocrService.OCRPDFFile(imageFilePath, textFilePath + ".tif", "eng");
