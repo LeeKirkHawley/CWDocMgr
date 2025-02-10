@@ -16,5 +16,8 @@ namespace CWDocMgr.Services
 
         void FillDocDateStrings(IEnumerable<DocumentModel> docList);
         void OcrDocument(DocumentModel documentModel);
+
+
+        string GetDocFilePath(string fileName);
     }
 }

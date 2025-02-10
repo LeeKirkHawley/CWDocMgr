@@ -109,7 +109,7 @@ namespace CWDocMgr.Services
                 var fileName = Guid.NewGuid().ToString() + imageFileExtension;
 
                 // set up the document file (input) path
-                string documentFilePath = Path.Combine(_configuration["ServerDocumentStorePath"], fileName);
+                string documentFilePath = GetDocFilePath(fileName);
 
                 // If file with same name exists
                 if (System.IO.File.Exists(documentFilePath))
@@ -151,27 +151,32 @@ namespace CWDocMgr.Services
 
         public void OcrDocument(DocumentModel documentModel)
         {
-            var doesFileExist = System.IO.File.Exists(documentModel.DocumentName);
-            string errorMsg = "";
+            //var doesFileExist = System.IO.File.Exists(documentModel.DocumentName);
+            //string errorMsg = "";
 
-            //if (imageFileExtension.ToLower() == ".pdf") {
+            //if (imageFileExtension.ToLower() == ".pdf")
+            //{
             //    await _ocrService.OCRPDFFile(imageFilePath, textFilePath + ".tif", "eng");
 
             //}
-            //else {
+            //else
+            //{
             //    errorMsg = await _ocrService.OCRImageFile(imageFilePath, textFilePath, "eng");
             //}
 
             //string textFileName = textFilePath + ".txt";
             //string ocrText = "";
-            //try {
+            //try
+            //{
             //    ocrText = System.IO.File.ReadAllText(textFileName);
             //}
-            //catch (Exception ex) {
+            //catch (Exception ex)
+            //{
             //    _debugLogger.Debug($"Couldn't read text file {textFileName}");
             //}
 
-            //if (ocrText == "") {
+            //if (ocrText == "")
+            //{
             //    if (errorMsg == "")
             //        ocrText = "No text found.";
             //    else
@@ -179,5 +184,11 @@ namespace CWDocMgr.Services
             //}
 
         }
+
+        public string GetDocFilePath(string fileName)
+        {
+            return Path.Combine(_configuration["ServerDocumentStorePath"], fileName);
+        }
+
     }
 }

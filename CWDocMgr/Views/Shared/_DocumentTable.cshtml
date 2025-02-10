@@ -22,9 +22,30 @@
                     <a asp-controller="Document" asp-action="Edit" asp-route-id="@doc.Id">Edit</a> |
                     <a asp-controller="Document" asp-action="Details" asp-route-id="@doc.Id">Details</a> |
                     <a asp-controller="Document" asp-action="Delete" asp-route-id="@doc.Id">Delete</a> |
-                    <a asp-controller="Document" asp-action="Ocr" asp-route-id="@doc.Id">OCR</a>
+                    @* <a asp-controller="Document" asp-action="Ocr" asp-route-id="@doc.Id">OCR</a> *@
+                    <asp:button OnClick="doOCR(@doc.Id)">OCR</asp:button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    function doOCR(id) {
+        console.log("in DoOCR()");
+        fetch('/document/ocr/' + id)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                //return response.json();
+            })
+            .then(data => {
+                //console.log(data);
+                //document.getElementById('output').innerText = JSON.stringify(data);
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    }
+</script>

@@ -12,14 +12,17 @@ namespace CWDocMgr.Controllers
         private readonly IConfiguration _configuration;
         private readonly IDocumentService _documentService;
         private readonly ILogger<DocumentController> _logger;
+        private readonly IOCRService _ocrService;
 
         public DocumentController(ApplicationDbContext context, IConfiguration configuration, 
-            IDocumentService documentService, ILogger<DocumentController> logger)
+            IDocumentService documentService, ILogger<DocumentController> logger,
+            IOCRService ocrService)
         {
             _context = context;
             _configuration = configuration;
             _documentService = documentService;
             _logger = logger;
+            _ocrService = ocrService;
         }
 
         // GET: DocumentModels
@@ -178,9 +181,105 @@ namespace CWDocMgr.Controllers
                 return NotFound();
             }
 
-            _documentService.OcrDocument(documentModel);
+            DateTime startTime = DateTime.Now;
 
-            return View(documentModel);
+            //_documentService.OcrDocument(documentModel);
+            _logger.LogInformation($"Thread {Thread.CurrentThread.ManagedThreadId}: OCRing file {documentModel.DocumentName}");
+
+
+            // Extract file name from whatever was posted by browser
+            //var originalFileName = System.IO.Path.GetFileName(documentModel.DocumentName);
+            string imageFileExtension = Path.GetExtension(documentModel.DocumentName);
+
+            //var fileName = Guid.NewGuid().ToString();
+
+            // set up the image file (input) path
+            //string imageFilePath = Path.Combine(_configuration["ImageFilePath"], documentModel.DocumentName);
+            string imageFilePath = _documentService.GetDocFilePath(documentModel.DocumentName);
+            //imageFilePath += imageFileExtension;
+
+            //_debugLogger.Info($"ImageFilePath: {imageFilePath}");
+            //_debugLogger.Info($"Current: {Directory.GetCurrentDirectory()}");
+
+            // set up the text file (output) path
+            //string textFilePath = Path.Combine(_configuration["TextFilePath"], documentModel.DocumentName);
+            string textFilePath = imageFilePath.Split('.')[0];
+            //textFilePath += ".txt";
+
+
+            // If file with same name exists delete it
+            if (System.IO.File.Exists(textFilePath))
+            {
+                System.IO.File.Delete(textFilePath);
+            }
+
+            //// Create new local file and copy contents of uploaded file
+            //try
+            //{
+            //    using (var localFile = System.IO.File.OpenWrite(imageFilePath))
+            //    using (var uploadedFile = files[0].OpenReadStream())
+            //    {
+            //        uploadedFile.CopyTo(localFile);
+            //    }
+            //}
+            //catch (Exception)
+            //{
+            //    _debugLogger.Debug($"Couldn't write file {imageFilePath}");
+            //    // HANDLE ERROR
+            //}
+
+            string errorMsg = "";
+
+            if (imageFileExtension.ToLower() == ".pdf")
+            {
+                await _ocrService.OCRPDFFile(imageFilePath, textFilePath + ".tif", "eng");
+
+            }
+            else
+            {
+                errorMsg = await _ocrService.OCRImageFile(imageFilePath, textFilePath, "eng");
+            }
+
+            string textFileName = textFilePath + ".txt";
+            string ocrText = "";
+            try
+            {
+                ocrText = System.IO.File.ReadAllText(textFileName);
+            }
+            catch (Exception)
+            {
+                _logger.LogDebug($"Couldn't read text file {textFileName}");
+            }
+
+            if (ocrText == "")
+            {
+                if (errorMsg == "")
+                    ocrText = "No text found.";
+                else
+                    ocrText = errorMsg;
+            }
+
+            // update model for display of ocr'ed data
+            OcrFileModel ocrFileModel = new OcrFileModel
+            {
+                OriginalFileName = documentModel.OriginalDocumentName,
+                CacheFilename = imageFilePath,
+                Language = "eng",
+                Languages = _ocrService.SetupLanguages()
+            };
+
+            
+            TimeSpan ts = (DateTime.Now - startTime);
+            string duration = ts.ToString(@"hh\:mm\:ss");
+
+            //_ocrService.Cleanup(_configuration["ImageFilePath"], _configuration["TextFilePath"]);
+
+            _logger.LogInformation($"Thread {Thread.CurrentThread.ManagedThreadId}: Finished processing file {documentModel.OriginalDocumentName} Elapsed time: {duration}");
+            //_debugLogger.Debug($"Leaving HomeController.Index()");
+
+
+            //return View(documentModel);
+            return StatusCode(200);
         }
 
         [NonAction]

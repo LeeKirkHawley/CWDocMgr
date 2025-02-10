@@ -25,6 +25,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IOCRService, OCRService>();
 
 var app = builder.Build();
 
