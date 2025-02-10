@@ -149,7 +149,7 @@ namespace CWDocMgr.Services
             }
         }
 
-        public void OcrFile(DocumentModel documentModel)
+        public void OcrDocument(DocumentModel documentModel)
         {
             var doesFileExist = System.IO.File.Exists(documentModel.DocumentName);
             string errorMsg = "";
