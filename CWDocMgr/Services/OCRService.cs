@@ -34,9 +34,9 @@ namespace CWDocMgr.Services
             string ocrFilePath = GetOcrFilePath(documentModel.DocumentName);
 
             // If file with same name exists delete it
-            if (System.IO.File.Exists(ocrFilePath))
+            if (File.Exists(ocrFilePath))
             {
-                System.IO.File.Delete(ocrFilePath);
+                File.Delete(ocrFilePath);
             }
 
             string errorMsg = "";
@@ -50,11 +50,10 @@ namespace CWDocMgr.Services
                 errorMsg = await OCRImageFile(imageFilePath, ocrFilePath, "eng");
             }
 
-            //string textFileName = ocrFilePath + ".txt";
             string ocrText = "";
             try
             {
-                ocrText = System.IO.File.ReadAllText(ocrFilePath);
+                ocrText = File.ReadAllText(ocrFilePath);
             }
             catch (Exception)
             {
@@ -70,13 +69,13 @@ namespace CWDocMgr.Services
             }
 
             // update model for display of ocr'ed data
-            OcrFileModel ocrFileModel = new OcrFileModel
-            {
-                OriginalFileName = documentModel.OriginalDocumentName,
-                CacheFilename = imageFilePath,
-                Language = "eng",
-                Languages = SetupLanguages()
-            };
+            //OcrFileModel ocrFileModel = new OcrFileModel
+            //{
+            //    OriginalFileName = documentModel.OriginalDocumentName,
+            //    CacheFilename = imageFilePath,
+            //    Language = "eng",
+            //    Languages = SetupLanguages()
+            //};
 
 
             TimeSpan ts = (DateTime.Now - startTime);

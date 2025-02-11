@@ -43,3 +43,15 @@
 <div>
     <img class="img" id="image" src="@Model.DocumentName" style="max-width:600px" />
 </div>
+
+@if (@Model.OCRText != "" ) 
+{
+    <div class="ocr-text-div">
+        OCR'd Text
+        <div class="ocr-text">
+            <pre name="ocrtext" id="ocrtext">
+                @Model.OCRText
+            </pre>
+        </div>
+    </div>
+}

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using CWDocMgr.Data;
 using CWDocMgr.Models;
 using CWDocMgr.Services;
+using System.IO;
 
 namespace CWDocMgr.Controllers
 {
@@ -52,7 +53,7 @@ namespace CWDocMgr.Controllers
                 return NotFound();
             }
 
-            var documentModel = await _context.Documents
+            DocumentModel? documentModel = await _context.Documents
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (documentModel == null)
             {
@@ -61,6 +62,19 @@ namespace CWDocMgr.Controllers
 
             string documentFilePath = _configuration["ClientDocumentStorePath"] + "/" + documentModel.DocumentName;
             documentModel.DocumentName = documentFilePath;
+
+            string ocrFilePath = _ocrService.GetOcrFilePath(documentFilePath);
+            if(System.IO.File.Exists(ocrFilePath))
+            {
+                try
+                {
+                    documentModel.OCRText = System.IO.File.ReadAllText(ocrFilePath);
+                }
+                catch (Exception)
+                {
+                    _logger.LogDebug($"Couldn't read text file {ocrFilePath}");
+                }
+            }
 
             return View(documentModel);
         }
@@ -175,13 +189,14 @@ namespace CWDocMgr.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         public async Task<IActionResult> Ocr(int? id)
         {
-            var documentModel = await _context.Documents.FindAsync(id);
+            DocumentModel? documentModel = await _context.Documents.FindAsync(id);
             if (documentModel == null)
             {
                 return NotFound();
             }
 
             await _ocrService.DoOcr(documentModel);
+
 
             return StatusCode(200);
         }

@@ -31,18 +31,18 @@ namespace CWDocMgr.Controllers
                 return Redirect("/Identity/Account/Login");
             }
 
-            int totalDocuments = _documentService.GetTotalDocuments();
-            IEnumerable<DocumentModel> documents = _documentService.GetDocuments(page, pageSize);
+            //int totalDocuments = _documentService.GetTotalDocuments();
+            //IEnumerable<DocumentModel> documents = _documentService.GetDocuments(page, pageSize);
 
-            IndexViewModel indexViewModel = new IndexViewModel
-            {
-                Documents = documents,
-                PageNumber = page,
-                TotalPages = totalDocuments / pageSize + 1
-            };
+            //IndexViewModel indexViewModel = new IndexViewModel
+            //{
+            //    Documents = documents,
+            //    PageNumber = page,
+            //    TotalPages = totalDocuments / pageSize + 1
+            //};
 
 
-            return View(indexViewModel);
+            return View(new HomeViewModel());
         }
 
         public IActionResult Privacy()
