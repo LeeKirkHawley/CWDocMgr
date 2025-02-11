@@ -7,21 +7,98 @@ namespace CWDocMgr.Services
     public class OCRService : IOCRService
     {
 
-        private readonly IConfiguration _settings;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<OCRService> _logger;
 
-        public OCRService(IConfiguration settings, ILogger<OCRService> logger)
+        public OCRService(IConfiguration configuration, ILogger<OCRService> logger)
         {
-            _settings = settings;
+            _configuration = configuration;
             _logger = logger;
         }
+
+        public async Task DoOcr(DocumentModel? documentModel)
+        {
+            DateTime startTime = DateTime.Now;
+
+            _logger.LogInformation($"Thread {Thread.CurrentThread.ManagedThreadId}: OCRing file {documentModel.DocumentName}");
+
+
+            // Extract file name from whatever was posted by browser
+            string imageFileExtension = Path.GetExtension(documentModel.DocumentName);
+
+            // set up the image file (input) path
+            string imageFilePath = GetDocFilePath(documentModel.DocumentName);
+
+            // set up the text file (output) path
+            //string ocrFilePath = imageFilePath.Split('.')[0];
+            string ocrFilePath = GetOcrFilePath(documentModel.DocumentName);
+
+            // If file with same name exists delete it
+            if (System.IO.File.Exists(ocrFilePath))
+            {
+                System.IO.File.Delete(ocrFilePath);
+            }
+
+            string errorMsg = "";
+
+            if (imageFileExtension.ToLower() == ".pdf")
+            {
+                await OCRPDFFile(imageFilePath, ocrFilePath + ".tif", "eng");
+            }
+            else
+            {
+                errorMsg = await OCRImageFile(imageFilePath, ocrFilePath, "eng");
+            }
+
+            //string textFileName = ocrFilePath + ".txt";
+            string ocrText = "";
+            try
+            {
+                ocrText = System.IO.File.ReadAllText(ocrFilePath);
+            }
+            catch (Exception)
+            {
+                _logger.LogDebug($"Couldn't read text file {ocrFilePath}");
+            }
+
+            if (ocrText == "")
+            {
+                if (errorMsg == "")
+                    ocrText = "No text found.";
+                else
+                    ocrText = errorMsg;
+            }
+
+            // update model for display of ocr'ed data
+            OcrFileModel ocrFileModel = new OcrFileModel
+            {
+                OriginalFileName = documentModel.OriginalDocumentName,
+                CacheFilename = imageFilePath,
+                Language = "eng",
+                Languages = SetupLanguages()
+            };
+
+
+            TimeSpan ts = (DateTime.Now - startTime);
+            string duration = ts.ToString(@"hh\:mm\:ss");
+
+            //_ocrService.Cleanup(_configuration["ImageFilePath"], _configuration["TextFilePath"]);
+
+            _logger.LogInformation($"Thread {Thread.CurrentThread.ManagedThreadId}: Finished processing file {documentModel.OriginalDocumentName} Elapsed time: {duration}");
+            //_debugLogger.Debug($"Leaving HomeController.Index()");
+        }
+
+
 
         public async Task<string> OCRImageFile(string imageName, string outputBase, string language)
         {
 
             //_debugLogger.Debug("Entering OCRImageFile()");
 
-            string TessPath = Path.Combine(_settings["TesseractPath"], "tesseract.exe");
+            // if outputBase has an extension, remove it.
+            outputBase = outputBase.Split(".")[0];
+
+            string TessPath = Path.Combine(_configuration["TesseractPath"], "tesseract.exe");
 
 
             System.Diagnostics.Process process = new Process();
@@ -31,6 +108,7 @@ namespace CWDocMgr.Services
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.FileName = TessPath;
 
+            // this has to be in the right order I think
             process.StartInfo.ArgumentList.Add(imageName);
             process.StartInfo.ArgumentList.Add(outputBase);
             process.StartInfo.ArgumentList.Add("-l");
@@ -62,7 +140,6 @@ namespace CWDocMgr.Services
                     }
                 }
                 process.WaitForExit(1000000);
-                //process.WaitForExit(new CancellationToken());
             }
             catch (Exception ex)
             {
@@ -75,13 +152,13 @@ namespace CWDocMgr.Services
         public async Task<string> OCRPDFFile(string pdfName, string outputFile, string language)
         {
 
-            string outputBase = _settings["ServerDocumentStorePath"] + "\\" + Path.GetFileNameWithoutExtension(pdfName);
+            string outputBase = _configuration["ServerDocumentStorePath"] + "\\" + Path.GetFileNameWithoutExtension(pdfName);
             string tifFileName = outputBase + ".tif";
 
             // convert pdf to tif
             using (System.Diagnostics.Process p = new Process())
             {
-                string GhostscriptPath = Path.Combine(_settings["GhostscriptPath"], "gswin64c.exe");  // "gswin64 'c' version doesn't show ui window
+                string GhostscriptPath = Path.Combine(_configuration["GhostscriptPath"], "gswin64c.exe");  // "gswin64 'c' version doesn't show ui window
 
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.RedirectStandardOutput = true;
@@ -287,6 +364,19 @@ namespace CWDocMgr.Services
                     }
                 }
             }
+        }
+
+        public string GetOcrFilePath(string fileName)
+        {
+            string ocrFilePath = Path.GetFileNameWithoutExtension(fileName);
+            ocrFilePath = Path.Combine(_configuration["OcrTextPath"], ocrFilePath);
+            ocrFilePath += ".txt";
+            return ocrFilePath;
+        }
+
+        public string GetDocFilePath(string fileName)
+        {
+            return Path.Combine(_configuration["ServerDocumentStorePath"], fileName);
         }
     }
 }

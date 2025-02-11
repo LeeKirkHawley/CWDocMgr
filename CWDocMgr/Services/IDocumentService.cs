@@ -15,8 +15,6 @@ namespace CWDocMgr.Services
         void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, ClaimsPrincipal User);
 
         void FillDocDateStrings(IEnumerable<DocumentModel> docList);
-        void OcrDocument(DocumentModel documentModel);
-
 
         string GetDocFilePath(string fileName);
     }

@@ -1,6 +1,5 @@
 ﻿using CWDocMgr.Data;
 using CWDocMgr.Models;
-using Humanizer;
 using System.Security.Claims;
 
 namespace CWDocMgr.Services
@@ -78,10 +77,10 @@ namespace CWDocMgr.Services
             await _applicationDbContext.SaveChangesAsync();
 
             string documentFilePath = Path.Combine(_configuration["ServerDocumentStorePath"], documentModel.DocumentName);
-            if (System.IO.File.Exists(documentFilePath))
+            if (File.Exists(documentFilePath))
             {
                 _logger.LogInformation($"Deleting file {documentFilePath}");
-                System.IO.File.Delete(documentFilePath);
+                File.Delete(documentFilePath);
             }
             else
             {
@@ -97,7 +96,6 @@ namespace CWDocMgr.Services
                 throw new Exception("user is not logged in.");
             }
 
-
             DateTime startTime = DateTime.Now;
 
             foreach (var file in files)
@@ -112,7 +110,7 @@ namespace CWDocMgr.Services
                 string documentFilePath = GetDocFilePath(fileName);
 
                 // If file with same name exists
-                if (System.IO.File.Exists(documentFilePath))
+                if (File.Exists(documentFilePath))
                 {
                     throw new Exception($"Document {documentFilePath} already exists!");
                 }
@@ -120,11 +118,11 @@ namespace CWDocMgr.Services
                 // Create new local file and copy contents of uploaded file
                 try
                 {
-                    using (var localFile = System.IO.File.OpenWrite(documentFilePath))
+                    using (var localFile = File.OpenWrite(documentFilePath))
                     using (var uploadedFile = file.OpenReadStream())
                     {
                         uploadedFile.CopyTo(localFile);
-                        bool fileExists = System.IO.File.Exists(documentFilePath);
+                        bool fileExists = File.Exists(documentFilePath);
 
                         // update model for display of ocr'ed data
                         model.OriginalFileName = originalFileName;
@@ -147,42 +145,6 @@ namespace CWDocMgr.Services
                 Microsoft.AspNetCore.Identity.IdentityUser user = _applicationDbContext.Users.First();
                 CreateDocument(user, originalFileName, documentFilePath);
             }
-        }
-
-        public void OcrDocument(DocumentModel documentModel)
-        {
-            //var doesFileExist = System.IO.File.Exists(documentModel.DocumentName);
-            //string errorMsg = "";
-
-            //if (imageFileExtension.ToLower() == ".pdf")
-            //{
-            //    await _ocrService.OCRPDFFile(imageFilePath, textFilePath + ".tif", "eng");
-
-            //}
-            //else
-            //{
-            //    errorMsg = await _ocrService.OCRImageFile(imageFilePath, textFilePath, "eng");
-            //}
-
-            //string textFileName = textFilePath + ".txt";
-            //string ocrText = "";
-            //try
-            //{
-            //    ocrText = System.IO.File.ReadAllText(textFileName);
-            //}
-            //catch (Exception ex)
-            //{
-            //    _debugLogger.Debug($"Couldn't read text file {textFileName}");
-            //}
-
-            //if (ocrText == "")
-            //{
-            //    if (errorMsg == "")
-            //        ocrText = "No text found.";
-            //    else
-            //        ocrText = errorMsg;
-            //}
-
         }
 
         public string GetDocFilePath(string fileName)
