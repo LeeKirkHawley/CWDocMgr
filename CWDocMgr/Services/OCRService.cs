@@ -43,7 +43,7 @@ namespace CWDocMgr.Services
 
             if (imageFileExtension.ToLower() == ".pdf")
             {
-                await OCRPDFFile(imageFilePath, ocrFilePath + ".tif", "eng");
+                await OCRPDFFile(imageFilePath, ocrFilePath, "eng");
             }
             else
             {
@@ -151,8 +151,11 @@ namespace CWDocMgr.Services
         public async Task<string> OCRPDFFile(string pdfName, string outputFile, string language)
         {
 
-            string outputBase = _configuration["ServerDocumentStorePath"] + "\\" + Path.GetFileNameWithoutExtension(pdfName);
-            string tifFileName = outputBase + ".tif";
+            //string outputBase = _configuration["ServerDocumentStorePath"] + "\\" + Path.GetFileNameWithoutExtension(pdfName);
+            string fileNameNoExtension = Path.GetFileNameWithoutExtension(pdfName);
+
+            string workFolder = GetWorkFilePath();
+            string tifFileName = workFolder + "\\" + fileNameNoExtension + ".tif";
 
             // convert pdf to tif
             using (System.Diagnostics.Process p = new Process())
@@ -175,6 +178,7 @@ namespace CWDocMgr.Services
                 p.WaitForExit(1000000);
             }
 
+            string outputBase = GetOcrFilePath(fileNameNoExtension);
             return await OCRImageFile(tifFileName, outputBase, language);
 
         }
@@ -371,6 +375,11 @@ namespace CWDocMgr.Services
             ocrFilePath = Path.Combine(_configuration["OcrTextPath"], ocrFilePath);
             ocrFilePath += ".txt";
             return ocrFilePath;
+        }
+
+        public string GetWorkFilePath()
+        {
+            return _configuration["WorkFolderPath"];
         }
 
         public string GetDocFilePath(string fileName)
