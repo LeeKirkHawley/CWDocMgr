@@ -14,16 +14,18 @@ namespace CWDocMgr.Controllers
         private readonly IDocumentService _documentService;
         private readonly ILogger<DocumentController> _logger;
         private readonly IOCRService _ocrService;
+        private readonly IFileService _fileService;
 
         public DocumentController(ApplicationDbContext context, IConfiguration configuration, 
             IDocumentService documentService, ILogger<DocumentController> logger,
-            IOCRService ocrService)
+            IOCRService ocrService, IFileService fileService)
         {
             _context = context;
             _configuration = configuration;
             _documentService = documentService;
             _logger = logger;
             _ocrService = ocrService;
+            _fileService = fileService;
         }
 
         // GET: DocumentModels
@@ -63,7 +65,7 @@ namespace CWDocMgr.Controllers
             string documentFilePath = _configuration["ClientDocumentStorePath"] + "/" + documentModel.DocumentName;
             documentModel.DocumentName = documentFilePath;
 
-            string ocrFilePath = _ocrService.GetOcrFilePath(documentFilePath);
+            string ocrFilePath = _fileService.GetOcrFilePath(documentFilePath);
             if(System.IO.File.Exists(ocrFilePath))
             {
                 try

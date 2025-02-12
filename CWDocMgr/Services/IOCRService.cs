@@ -11,6 +11,5 @@ namespace CWDocMgr.Services
         List<SelectListItem> SetupLanguages();
         void ImmediateCleanup(string imageFilePath, string imageFileExtension, string textFilePath);
         void Cleanup(string imageFilePath, string textFilePath);
-        string GetOcrFilePath(string fileName);
     }
 }

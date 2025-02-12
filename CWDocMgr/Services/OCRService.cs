@@ -9,11 +9,13 @@ namespace CWDocMgr.Services
 
         private readonly IConfiguration _configuration;
         private readonly ILogger<OCRService> _logger;
+        private readonly IFileService _fileService;
 
-        public OCRService(IConfiguration configuration, ILogger<OCRService> logger)
+        public OCRService(IConfiguration configuration, ILogger<OCRService> logger, IFileService fileService)
         {
             _configuration = configuration;
             _logger = logger;
+            _fileService = fileService;
         }
 
         public async Task DoOcr(DocumentModel? documentModel)
@@ -27,11 +29,11 @@ namespace CWDocMgr.Services
             string imageFileExtension = Path.GetExtension(documentModel.DocumentName);
 
             // set up the image file (input) path
-            string imageFilePath = GetDocFilePath(documentModel.DocumentName);
+            string imageFilePath = _fileService.GetDocFilePath(documentModel.DocumentName);
 
             // set up the text file (output) path
             //string ocrFilePath = imageFilePath.Split('.')[0];
-            string ocrFilePath = GetOcrFilePath(documentModel.DocumentName);
+            string ocrFilePath = _fileService.GetOcrFilePath(documentModel.DocumentName);
 
             // If file with same name exists delete it
             if (File.Exists(ocrFilePath))
@@ -154,7 +156,7 @@ namespace CWDocMgr.Services
             //string outputBase = _configuration["ServerDocumentStorePath"] + "\\" + Path.GetFileNameWithoutExtension(pdfName);
             string fileNameNoExtension = Path.GetFileNameWithoutExtension(pdfName);
 
-            string workFolder = GetWorkFilePath();
+            string workFolder = _fileService.GetWorkFilePath();
             string tifFileName = workFolder + "\\" + fileNameNoExtension + ".tif";
 
             // convert pdf to tif
@@ -178,7 +180,7 @@ namespace CWDocMgr.Services
                 p.WaitForExit(1000000);
             }
 
-            string outputBase = GetOcrFilePath(fileNameNoExtension);
+            string outputBase = _fileService.GetOcrFilePath(fileNameNoExtension);
             return await OCRImageFile(tifFileName, outputBase, language);
 
         }
@@ -369,23 +371,6 @@ namespace CWDocMgr.Services
             }
         }
 
-        public string GetOcrFilePath(string fileName)
-        {
-            string ocrFilePath = Path.GetFileNameWithoutExtension(fileName);
-            ocrFilePath = Path.Combine(_configuration["OcrTextPath"], ocrFilePath);
-            ocrFilePath += ".txt";
-            return ocrFilePath;
-        }
-
-        public string GetWorkFilePath()
-        {
-            return _configuration["WorkFolderPath"];
-        }
-
-        public string GetDocFilePath(string fileName)
-        {
-            return Path.Combine(_configuration["ServerDocumentStorePath"], fileName);
-        }
     }
 }
 
