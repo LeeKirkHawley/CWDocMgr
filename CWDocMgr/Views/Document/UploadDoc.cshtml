@@ -10,12 +10,44 @@
     <div>
         <div class="row">
             <div class="col-4 text-center">
-                <input type="file" name="files" multiple/>
+                <input type="file" name="files" id="files" multiple onChange="updateFileList()" />
             </div>
             <div class="col-4 text-center">
                 <button type="submit">Upload</button>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <ul id="fileList"></ul>
+            </div>
+        </div>
     </div>
 </form>
+
+<script>
+    const input = document.getElementById("files");
+    // const log = document.getElementById("log");
+
+    //input.addEventListener("change", updateFileList());
+    // input.addEventListener("change", (event) => {
+    //   updateFileList();
+    // });
+
+    input.addEventListener('change', function() {
+                console.log('Input value changed to:', this.value);
+                updateFileList();
+                // Here, you can call a function or perform other actions when the input changes.
+            });
+
+    function updateFileList() {
+        var input = document.getElementById('files');
+        var output = document.getElementById('fileList');
+        output.innerHTML = '';
+        for (var i = 0; i < input.files.length; i++) {
+            var li = document.createElement('li');
+            li.textContent = input.files[i].name;
+            output.appendChild(li);
+        }
+    }
+</script>
 
