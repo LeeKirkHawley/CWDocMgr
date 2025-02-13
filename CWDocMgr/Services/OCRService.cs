@@ -49,7 +49,7 @@ namespace CWDocMgr.Services
             }
             else
             {
-                errorMsg = await OCRImageFile(imageFilePath, ocrFilePath, "eng");
+                errorMsg = OCRImageFile(imageFilePath, ocrFilePath, "eng");
             }
 
             string ocrText = "";
@@ -91,7 +91,7 @@ namespace CWDocMgr.Services
 
 
 
-        public async Task<string> OCRImageFile(string imageName, string outputBase, string language)
+        public string OCRImageFile(string imageName, string outputBase, string language)
         {
 
             //_debugLogger.Debug("Entering OCRImageFile()");
@@ -181,7 +181,7 @@ namespace CWDocMgr.Services
             }
 
             string outputBase = _fileService.GetOcrFilePath(fileNameNoExtension);
-            return await OCRImageFile(tifFileName, outputBase, language);
+            return OCRImageFile(tifFileName, outputBase, language);
 
         }
 

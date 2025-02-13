@@ -23,7 +23,8 @@
                     <a asp-controller="Document" asp-action="Details" asp-route-id="@doc.Id">Details</a> |
                     <a asp-controller="Document" asp-action="Delete" asp-route-id="@doc.Id">Delete</a> |
                     @* <a asp-controller="Document" asp-action="Ocr" asp-route-id="@doc.Id">OCR</a> *@
-                    <asp:button OnClick="doOCR(@doc.Id)">OCR</asp:button>
+                    @* <asp:button OnClick="doOCR(@doc.Id)">OCR</asp:button> *@
+                    <button type="button" class="link-button" onclick="doOCR(@doc.Id)">OCR</button>
                 </td>
             </tr>
         }

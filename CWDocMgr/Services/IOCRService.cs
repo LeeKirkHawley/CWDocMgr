@@ -6,7 +6,7 @@ namespace CWDocMgr.Services
     public interface IOCRService
     {
         Task DoOcr(DocumentModel? documentModel);
-        Task<string> OCRImageFile(string imageName, string outputBase, string language);
+        string OCRImageFile(string imageName, string outputBase, string language);
         Task<string> OCRPDFFile(string pdfName, string outputFile, string language);
         List<SelectListItem> SetupLanguages();
         void ImmediateCleanup(string imageFilePath, string imageFileExtension, string textFilePath);

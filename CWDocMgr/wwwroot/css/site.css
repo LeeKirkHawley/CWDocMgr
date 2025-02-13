@@ -19,7 +19,7 @@ html {
 
 body {
     color: black;
-    background-color: wheat;
+    background-color: lightblue;
     margin-bottom: 60px;
 }
 
@@ -38,13 +38,13 @@ body {
 
 .table {
     color: black;
-    background-color: wheat !important;
-    border-width: 1px;
-    border-color: gray;
+    background-color: lightblue !important;
+    border-width: 1px !important;
+    border-color: black;
 }
 
 .table > :not(caption) > * > * {
-    background-color: wheat !important;
+    background-color: lightblue !important;
 }
 
 .bg-white {
@@ -58,6 +58,34 @@ body {
 }
 
 .ocr-text-div {
-    margin-top: 20px;
+    margin-top: 20px;   .link-button {
+       background: none;
+       border: none;
+       color: blue;
+       text-decoration: underline;
+       cursor: pointer;
+       font-size: inherit;
+   }
+   .link-button:focus {
+       outline: none;
+   }
 }
 
+:root {
+    --bs-border-color: black !important;
+    /*Dont like it but the only way I can match the table borders at the moment.*/
+    --bs-border-width: 3px !important;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+    .link-button:focus {
+        outline: none;
+    }
