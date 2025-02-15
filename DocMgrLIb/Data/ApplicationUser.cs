@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿//using Microsoft.AspNetCore.Identity;
 
-namespace DocMgrLib.Data
-{
-    public class ApplicationUser : IdentityUser
-    {
-    }
-}
+//namespace DocMgrLib.Data
+//{
+//    public class ApplicationUser : IdentityUser
+//    {
+//    }
+//}

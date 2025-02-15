@@ -14,7 +14,7 @@ namespace DocMgrLib.Services
         IEnumerable<DocumentModel> GetDocuments(int page, int pageSize);
         int GetTotalDocuments();
 
-        DocumentModel CreateDocument(Microsoft.AspNetCore.Identity.IdentityUser user, string originalFileName, string documentFilePath);
+        DocumentModel CreateDocument(UserModel user, string originalFileName, string documentFilePath);
 
         void DeleteDocument(int id);
 

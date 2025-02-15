@@ -1,6 +1,7 @@
 ﻿using DocMgrLib.Data;
 using DocMgrLib.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
@@ -46,7 +47,7 @@ namespace DocMgrLib.Services
             return _applicationDbContext.Documents.Count();
         }
 
-        public DocumentModel CreateDocument(Microsoft.AspNetCore.Identity.IdentityUser user, string originalFileName, string documentFilePath)
+        public DocumentModel CreateDocument(UserModel user, string originalFileName, string documentFilePath)
         {
 
             DocumentModel newDoc = _applicationDbContext.Documents.Add(new DocumentModel
@@ -145,7 +146,8 @@ namespace DocMgrLib.Services
                 }
 
 
-                Microsoft.AspNetCore.Identity.IdentityUser user = _applicationDbContext.Users.First();
+                //Microsoft.AspNetCore.Identity.IdentityUser user = _applicationDbContext.Users.First();
+                UserModel user = _applicationDbContext.Users.Where(u => u.userName == User.Identities.ToArray()[0].Name).FirstOrDefault();
                 CreateDocument(user, originalFileName, documentFilePath);
             }
         }
