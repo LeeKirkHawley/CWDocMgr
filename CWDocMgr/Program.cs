@@ -1,5 +1,5 @@
-using CWDocMgr.Data;
-using CWDocMgr.Services;
+using DocMgrLib.Data;
+using DocMgrLib.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

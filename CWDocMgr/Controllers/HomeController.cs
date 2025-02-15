@@ -1,6 +1,6 @@
-using CWDocMgr.Data;
+using DocMgrLib.Data;
 using CWDocMgr.Models;
-using CWDocMgr.Services;
+using DocMgrLib.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CWDocMgr.Controllers

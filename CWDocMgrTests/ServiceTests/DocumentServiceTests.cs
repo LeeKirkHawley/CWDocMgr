@@ -1,6 +1,6 @@
-﻿using CWDocMgr.Data;
-using CWDocMgr.Models;
-using CWDocMgr.Services;
+﻿using DocMgrLib.Data;
+using DocMgrLib.Models;
+using DocMgrLib.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

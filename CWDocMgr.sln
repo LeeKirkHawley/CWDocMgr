@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CWDocMgr", "CWDocMgr\CWDocM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CWDocMgrTests", "CWDocMgrTests\CWDocMgrTests.csproj", "{56B381FC-4ACB-4D7D-A70B-DA5F838FD66A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocMgrLib", "DocMgrLIb\DocMgrLib.csproj", "{BDEB95F6-98B7-4FBD-A56F-F10836B5208F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{56B381FC-4ACB-4D7D-A70B-DA5F838FD66A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56B381FC-4ACB-4D7D-A70B-DA5F838FD66A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56B381FC-4ACB-4D7D-A70B-DA5F838FD66A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDEB95F6-98B7-4FBD-A56F-F10836B5208F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDEB95F6-98B7-4FBD-A56F-F10836B5208F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDEB95F6-98B7-4FBD-A56F-F10836B5208F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDEB95F6-98B7-4FBD-A56F-F10836B5208F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

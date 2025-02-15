@@ -3,14 +3,15 @@ using Moq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using CWDocMgr.Controllers;
-using CWDocMgr.Services;
 using CWDocMgr.Models;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using CWDocMgr.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using DocMgrLib.Services;
+using DocMgrLib.Models;
+using DocMgrLib.Data;
 
 namespace CWDocMgrTests.ControllerTests
 {

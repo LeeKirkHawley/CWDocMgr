@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CWDocMgr.Data;
+using DocMgrLib.Data;
 using CWDocMgr.Models;
-using CWDocMgr.Services;
-using System.IO;
+using DocMgrLib.Services;
+using DocMgrLib.Models;
 
 namespace CWDocMgr.Controllers
 {

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿//using Microsoft.AspNetCore.Identity;
 
-namespace CWDocMgr.Data
-{
-    public class ApplicationUser : IdentityUser
-    {
-    }
-}
+//namespace CWDocMgr.Data
+//{
+//    public class ApplicationUser : IdentityUser
+//    {
+//    }
+//}

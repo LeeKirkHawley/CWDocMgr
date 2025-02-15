@@ -1,4 +1,6 @@
-﻿namespace CWDocMgr.Models
+﻿using DocMgrLib.Models;
+
+namespace CWDocMgr.Models
 {
     public record IndexViewModel
     {
