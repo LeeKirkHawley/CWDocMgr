@@ -9,8 +9,9 @@ namespace DocMgrLib.Services
 {
     public interface IAccountService
     {
-        public abstract ClaimsPrincipal Login(string userName, string password);
-        public abstract ClaimsPrincipal CreateUser(string userName, string password, string role);
+        public ClaimsPrincipal Login(string userName, string password);
+        public ClaimsPrincipal CreateUser(string userName, string password, string role);
+        public ClaimsPrincipal? loggedInUser { get; }
 
     }
 }

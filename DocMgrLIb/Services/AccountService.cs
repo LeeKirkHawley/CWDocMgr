@@ -1,12 +1,7 @@
 ﻿using DocMgrLib.Data;
 using DocMgrLib.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DocMgrLib.Services
 {

@@ -3,6 +3,7 @@ using DocMgrLib.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Configuration;
 using System.Data;
@@ -32,14 +33,16 @@ namespace CWDocMgrApp
             Configuration = builder.Build();
             services.AddSingleton(Configuration);
 
-            // Register the DbContext
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite());
 
+            services.AddLogging(configure => configure
+                    .AddConsole()
+                    .SetMinimumLevel(LogLevel.Debug)
+                );
+
             services.AddSingleton<MainWindow>();
-            services.AddTransient<IAccountService, AccountService>();
+            services.AddSingleton<IAccountService, AccountService>();
             services.AddTransient<IDocumentService, DocumentService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IOCRService, OCRService>();

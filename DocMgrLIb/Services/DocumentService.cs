@@ -152,9 +152,70 @@ namespace DocMgrLib.Services
             }
         }
 
+        public void UploadDocuments(string[] files, ClaimsPrincipal User)
+        {
+            ClaimsIdentity identity = User.Identities.ToArray()[0];
+            if (!identity.IsAuthenticated)
+            {
+                throw new Exception("user is not logged in.");
+            }
+
+            DateTime startTime = DateTime.Now;
+
+            foreach (var file in files)
+            {
+                // Extract file name from whatever was posted by browser
+                var originalFileName = file;
+                string imageFileExtension = Path.GetExtension(originalFileName);
+
+                var fileName = Guid.NewGuid().ToString() + imageFileExtension;
+
+                // set up the document file (input) path
+                string documentFilePath = GetDocFilePath(fileName);
+
+                // If file with same name exists
+                if (File.Exists(documentFilePath))
+                {
+                    throw new Exception($"Document {documentFilePath} already exists!");
+                }
+
+                // Create new local file and copy contents of uploaded file
+                try
+                {
+                    using (var localFile = File.OpenWrite(documentFilePath))
+                    //using (var uploadedFile = file.OpenReadStream())
+                    using (FileStream uploadedFile = new FileStream(file, FileMode.Open, FileAccess.Read))
+                    {
+                        uploadedFile.CopyTo(localFile);
+                        bool fileExists = File.Exists(documentFilePath);
+
+                        // update model for display of ocr'ed data
+                        //model.OriginalFileName = originalFileName;
+
+                        DateTime finishTime = DateTime.Now;
+                        TimeSpan ts = (finishTime - startTime);
+                        string duration = ts.ToString(@"hh\:mm\:ss");
+
+                        //_logger.LogInformation($"Thread {Thread.CurrentThread.ManagedThreadId}: Finished uploading document {file} to {localFile} Elapsed time: {duration}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug($"Couldn't write file {documentFilePath}");
+                    // HANDLE ERROR
+                    throw;
+                }
+
+
+                //Microsoft.AspNetCore.Identity.IdentityUser user = _applicationDbContext.Users.First();
+                UserModel user = _applicationDbContext.Users.Where(u => u.userName == User.Identities.ToArray()[0].Name).FirstOrDefault();
+                CreateDocument(user, originalFileName, documentFilePath);
+            }
+        }
+
         public string GetDocFilePath(string fileName)
         {
-            return Path.Combine(_configuration["ServerDocumentStorePath"], fileName);
+            return Path.Combine(_configuration["DocumentStorePath"], fileName);
         }
 
     }

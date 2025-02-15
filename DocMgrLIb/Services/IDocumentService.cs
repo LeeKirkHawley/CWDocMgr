@@ -19,6 +19,7 @@ namespace DocMgrLib.Services
         void DeleteDocument(int id);
 
         void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, ClaimsPrincipal User);
+        void UploadDocuments(string[] files, ClaimsPrincipal User);
 
         void FillDocDateStrings(IEnumerable<DocumentModel> docList);
 
