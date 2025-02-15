@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -19,7 +20,7 @@ namespace DocMgrLib.Services
         void DeleteDocument(int id);
 
         void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, ClaimsPrincipal User);
-        void UploadDocuments(string[] files, ClaimsPrincipal User);
+        ObservableCollection<DocumentGridVM> UploadDocuments(string[] files, ClaimsPrincipal User);
 
         void FillDocDateStrings(IEnumerable<DocumentModel> docList);
 

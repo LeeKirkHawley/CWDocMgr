@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
 using System.Security.Claims;
 
 namespace DocMgrLib.Services
@@ -145,14 +146,12 @@ namespace DocMgrLib.Services
                     throw;
                 }
 
-
-                //Microsoft.AspNetCore.Identity.IdentityUser user = _applicationDbContext.Users.First();
                 UserModel user = _applicationDbContext.Users.Where(u => u.userName == User.Identities.ToArray()[0].Name).FirstOrDefault();
                 CreateDocument(user, originalFileName, documentFilePath);
             }
         }
 
-        public void UploadDocuments(string[] files, ClaimsPrincipal User)
+        public ObservableCollection<DocumentGridVM> UploadDocuments(string[] files, ClaimsPrincipal User)
         {
             ClaimsIdentity identity = User.Identities.ToArray()[0];
             if (!identity.IsAuthenticated)
@@ -162,8 +161,11 @@ namespace DocMgrLib.Services
 
             DateTime startTime = DateTime.Now;
 
+            ObservableCollection<DocumentGridVM> collection = new ObservableCollection<DocumentGridVM>();
+
             foreach (var file in files)
             {
+
                 // Extract file name from whatever was posted by browser
                 var originalFileName = file;
                 string imageFileExtension = Path.GetExtension(originalFileName);
@@ -183,14 +185,10 @@ namespace DocMgrLib.Services
                 try
                 {
                     using (var localFile = File.OpenWrite(documentFilePath))
-                    //using (var uploadedFile = file.OpenReadStream())
                     using (FileStream uploadedFile = new FileStream(file, FileMode.Open, FileAccess.Read))
                     {
                         uploadedFile.CopyTo(localFile);
                         bool fileExists = File.Exists(documentFilePath);
-
-                        // update model for display of ocr'ed data
-                        //model.OriginalFileName = originalFileName;
 
                         DateTime finishTime = DateTime.Now;
                         TimeSpan ts = (finishTime - startTime);
@@ -207,10 +205,21 @@ namespace DocMgrLib.Services
                 }
 
 
-                //Microsoft.AspNetCore.Identity.IdentityUser user = _applicationDbContext.Users.First();
+
                 UserModel user = _applicationDbContext.Users.Where(u => u.userName == User.Identities.ToArray()[0].Name).FirstOrDefault();
                 CreateDocument(user, originalFileName, documentFilePath);
+
+                DocumentGridVM doc = new DocumentGridVM { 
+                    UserName = user.userName,
+                    OriginalDocumentName = originalFileName,
+                    DocumentName = fileName,
+                    DocumentDate = DateTime.Now.Ticks
+                };
+
+                collection.Add(doc);
             }
+
+            return collection;
         }
 
         public string GetDocFilePath(string fileName)

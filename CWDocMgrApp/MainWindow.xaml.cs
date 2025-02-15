@@ -1,16 +1,10 @@
 ﻿using DocMgrLib.Models;
 using DocMgrLib.Services;
 using Microsoft.Win32;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CWDocMgrApp
 {
@@ -22,6 +16,17 @@ namespace CWDocMgrApp
         private readonly IAccountService _accountService;
         private readonly IDocumentService _documentService;
 
+        public ObservableCollection<DocumentGridVM> _docCollection = [];
+        public ObservableCollection<DocumentGridVM> docCollection
+        {
+            get { return _docCollection; }
+            set
+            {
+                _docCollection = value;
+                OnPropertyChanged();
+            }
+        }
+
         public MainWindow() { }
 
         public MainWindow(IAccountService accountService, IDocumentService documentService)
@@ -30,6 +35,17 @@ namespace CWDocMgrApp
             _documentService = documentService;
 
             InitializeComponent();
+
+            docCollection = new ObservableCollection<DocumentGridVM>
+            {
+                new DocumentGridVM{
+                    DocumentName = "SomeDoc",
+                    OriginalDocumentName = "OriginalDoc",
+                    UserName = "Fred",
+                    DocumentDate = 123456789
+                }
+            };
+            DataContext = this;
 
             //var loginWindow = new LoginWindow();
             //if (loginWindow.ShowDialog() == true)
@@ -45,6 +61,8 @@ namespace CWDocMgrApp
             //    // Handle login cancellation
             //    Application.Current.Shutdown();
             //}
+
+            // TEMPORARY 
             _accountService.Login("Kirk", "pwd");
         }
 
@@ -68,8 +86,21 @@ namespace CWDocMgrApp
                 {
                     OriginalFileName = filename
                 };
-                _documentService.UploadDocuments(openFileDlg.FileNames, _accountService.loggedInUser);
+
+                var newCollection = _documentService.UploadDocuments(openFileDlg.FileNames, _accountService.loggedInUser);
+                docCollection.Clear();
+                foreach (DocumentGridVM vm in newCollection)
+                {
+                    docCollection.Add(vm);
+                }
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
     }
 }

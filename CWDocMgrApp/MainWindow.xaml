@@ -7,7 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Upload Document" Click="UploadButton_Click" HorizontalAlignment="Left" Margin="63,38,0,0" VerticalAlignment="Top"/>
-
+        <StackPanel>
+            <Button Content="Upload Documents" Click="UploadButton_Click" HorizontalAlignment="Left" Margin="63,38,0,0" VerticalAlignment="Top"/>
+            <DataGrid 
+                ItemsSource="{Binding docCollection, UpdateSourceTrigger=PropertyChanged}"
+                AutoGenerateColumns="True" 
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch">
+            </DataGrid> 
+        </StackPanel>
     </Grid>
 </Window>
