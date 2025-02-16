@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DocMgrLib.Models;
 using DocMgrLib.Services;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,9 +13,6 @@ using System.Windows.Media.Imaging;
 
 namespace CWDocMgrApp
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly IAccountService _accountService;
@@ -155,7 +151,6 @@ namespace CWDocMgrApp
             if (result == true)
             {
                 string filename = openFileDlg.FileName;
-                //FilePathText.Text = $"Selected file: {filename}";
 
                 UploadDocsViewModel uploadDpcsVM = new UploadDocsViewModel
                 {
@@ -170,14 +165,15 @@ namespace CWDocMgrApp
 
         private void OcrDocument(DocumentGridVM document)
         {
-            DocumentModel docModel = new DocumentModel {
+            DocumentModel docModel = new DocumentModel
+            {
                 Id = document.Id,
                 DocumentName = document.DocumentName,
                 OriginalDocumentName = document.OriginalDocumentName,
                 DocumentDate = document.DocumentDate,
                 UserId = _userService.GetAllowedUser(document.UserName).Id
-
             };
+
             _ocrService.DoOcr(docModel);
 
             SelectedDocument = document;
