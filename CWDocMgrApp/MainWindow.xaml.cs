@@ -41,6 +41,14 @@ namespace CWDocMgrApp
             {
                 _selectedDocument = value;
                 OnPropertyChanged();
+                if (_selectedDocument == null) 
+                { 
+                
+                }
+                else
+                {
+                    ViewDocumentDetails(_selectedDocument);
+                }
             }
         }
         public ICommand OcrCommand { get; }

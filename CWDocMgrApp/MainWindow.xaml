@@ -28,7 +28,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
+                                    <!--<Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>-->
                                     <Button Content="Ocr" Command="{Binding DataContext.OcrCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
                                     <Button Content="Delete" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
                                 </StackPanel>
@@ -44,7 +44,7 @@
                 </Grid.ColumnDefinitions>
                 <Border BorderBrush="Black" BorderThickness="2" CornerRadius="0" Margin="5" Grid.Column="0">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <Image x:Name="DisplayedImage" Stretch="None" />
+                        <Image x:Name="DisplayedImage" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                     </ScrollViewer>
                 </Border>
                 <Border BorderBrush="Black" BorderThickness="2" CornerRadius="0" Margin="5" Grid.Column="1">
