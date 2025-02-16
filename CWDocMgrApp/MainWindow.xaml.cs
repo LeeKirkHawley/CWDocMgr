@@ -88,6 +88,7 @@ namespace CWDocMgrApp
                 };
 
                 var newCollection = _documentService.UploadDocuments(openFileDlg.FileNames, _accountService.loggedInUser);
+
                 docCollection.Clear();
                 foreach (DocumentGridVM vm in newCollection)
                 {

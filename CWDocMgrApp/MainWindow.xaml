@@ -11,9 +11,17 @@
             <Button Content="Upload Documents" Click="UploadButton_Click" HorizontalAlignment="Left" Margin="63,38,0,0" VerticalAlignment="Top"/>
             <DataGrid 
                 ItemsSource="{Binding docCollection, UpdateSourceTrigger=PropertyChanged}"
-                AutoGenerateColumns="True" 
+                AutoGenerateColumns="False" 
+                CanUserAddRows="false" 
+                CanUserDeleteRows="false"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="User Name" Binding="{Binding UserName}" Width="4*"/>
+                    <DataGridTextColumn Header="Document Name" Binding="{Binding DocumentName}" Width="2*"/>
+                    <DataGridTextColumn Header="Original Name" Binding="{Binding OriginalDocumentName}" Width="2*"/>
+                    <DataGridTextColumn Header="Document Date" Binding="{Binding DocumentDate}" Width="2*"/>
+                </DataGrid.Columns>                
             </DataGrid> 
         </StackPanel>
     </Grid>
