@@ -1,9 +1,12 @@
-﻿using DocMgrLib.Models;
+﻿using AutoMapper;
+using DocMgrLib.Models;
 using DocMgrLib.Services;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Windows;
 
 namespace CWDocMgrApp
@@ -15,6 +18,8 @@ namespace CWDocMgrApp
     {
         private readonly IAccountService _accountService;
         private readonly IDocumentService _documentService;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
         public ObservableCollection<DocumentGridVM> _docCollection = [];
         public ObservableCollection<DocumentGridVM> docCollection
@@ -29,10 +34,13 @@ namespace CWDocMgrApp
 
         public MainWindow() { }
 
-        public MainWindow(IAccountService accountService, IDocumentService documentService)
+        public MainWindow(IAccountService accountService, IDocumentService documentService, 
+            IUserService userService, IMapper mapper)
         {
             _accountService = accountService;
             _documentService = documentService;
+            _userService = userService;
+            _mapper = mapper;
 
             InitializeComponent();
 
@@ -47,6 +55,7 @@ namespace CWDocMgrApp
             };
             DataContext = this;
 
+            // PERMANENT
             //var loginWindow = new LoginWindow();
             //if (loginWindow.ShowDialog() == true)
             //{
@@ -64,6 +73,43 @@ namespace CWDocMgrApp
 
             // TEMPORARY 
             _accountService.Login("Kirk", "pwd");
+
+            LoadFromDatabase();
+        }
+
+        private void LoadFromDatabase()
+        {
+            ClaimsPrincipal? loggedInUser = _accountService.loggedInUser;
+            if(loggedInUser == null)
+            {
+                return;
+            }
+
+            ClaimsIdentity identity = loggedInUser.Identities.ToArray()[0];
+            UserModel user = _userService.GetAllowedUser(_accountService.loggedInUser?.Identity?.Name);
+            IEnumerable<DocumentModel> docsFromDB = _documentService.GetDocuments(user, 1, 20);
+
+            List<DocumentGridVM> vms = new List<DocumentGridVM>();
+            foreach(DocumentModel doc in docsFromDB)
+            {
+                DocumentGridVM vm = new DocumentGridVM
+                {
+                    DocumentName = doc.DocumentName,
+                    OriginalDocumentName = doc.OriginalDocumentName,
+                    UserName = user.userName,
+                    DocumentDate = doc.DocumentDate
+                };
+
+                vms.Add(vm);
+            }
+
+            docCollection.Clear();
+            foreach(DocumentGridVM vm in vms)
+            {
+                docCollection.Add(vm);
+            }
+
+            OnPropertyChanged();
         }
 
         private void UploadButton_Click(object sender, RoutedEventArgs e)
@@ -89,11 +135,12 @@ namespace CWDocMgrApp
 
                 var newCollection = _documentService.UploadDocuments(openFileDlg.FileNames, _accountService.loggedInUser);
 
-                docCollection.Clear();
-                foreach (DocumentGridVM vm in newCollection)
-                {
-                    docCollection.Add(vm);
-                }
+                LoadFromDatabase();
+                //docCollection.Clear();
+                //foreach (DocumentGridVM vm in newCollection)
+                //{
+                //    docCollection.Add(vm);
+                //}
             }
         }
 

@@ -23,10 +23,16 @@ namespace DocMgrLib.Services
             _configuration = configuration;
         }
 
-        public IEnumerable<DocumentModel> GetDocuments(int page, int pageSize)
+        public IEnumerable<DocumentModel> GetDocuments(UserModel user, int page, int pageSize)
         {
+            List<DocumentModel> docList = _applicationDbContext.Documents
+                .Where(user => user.Id == user.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
             // get paginated Documents      
-            List<DocumentModel> docList = _applicationDbContext.Documents.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            //List<DocumentModel> docList = _applicationDbContext.Documents.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             FillDocDateStrings(docList);
 

@@ -1,4 +1,5 @@
-﻿using DocMgrLib.Data;
+﻿using AutoMapper;
+using DocMgrLib.Data;
 using DocMgrLib.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,6 +41,18 @@ namespace CWDocMgrApp
                     .AddConsole()
                     .SetMinimumLevel(LogLevel.Debug)
                 );
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
+
+            // If you need to use the mapper globally, you could make it static or inject it somewhere
+            // Here's an example of making it globally accessible:
+            //YourStaticClass.Mapper = mapper;
+
 
             services.AddSingleton<MainWindow>();
             services.AddSingleton<IAccountService, AccountService>();
