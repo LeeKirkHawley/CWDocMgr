@@ -41,9 +41,8 @@ namespace CWDocMgrApp
             {
                 _selectedDocument = value;
                 OnPropertyChanged();
-                if (_selectedDocument == null) 
-                { 
-                
+                if (_selectedDocument == null)
+                {
                 }
                 else
                 {
@@ -71,15 +70,15 @@ namespace CWDocMgrApp
             InitializeComponent();
 
             docCollection = new ObservableCollection<DocumentGridVM>
-            {
-                new DocumentGridVM{
-                    Id = 1,
-                    DocumentName = "SomeDoc",
-                    OriginalDocumentName = "OriginalDoc",
-                    UserName = "Fred",
-                    DocumentDate = 123456789
-                }
-            };
+                {
+                    new DocumentGridVM{
+                        Id = 1,
+                        DocumentName = "SomeDoc",
+                        OriginalDocumentName = "OriginalDoc",
+                        UserName = "Fred",
+                        DocumentDate = 123456789
+                    }
+                };
             DataContext = this;
 
             // PERMANENT
@@ -151,8 +150,8 @@ namespace CWDocMgrApp
             openFileDlg.Multiselect = true;
 
             // Set filter for file extension and default file extension 
-            //openFileDlg.DefaultExt = ".txt";
-            //openFileDlg.Filter = "Text documents (.txt)|*.txt";
+            openFileDlg.DefaultExt = ".jpg;*.png;*.pdf";
+            openFileDlg.Filter = "Image and PDF Files|*.jpg;*.jpeg;*.png;*.pdf|JPEG Files|*.jpg;*.jpeg|PNG Files|*.png|PDF Files|*.pdf";
 
             Nullable<bool> result = openFileDlg.ShowDialog();
 
@@ -197,21 +196,45 @@ namespace CWDocMgrApp
             else
             {
                 string filePath = _fileService.GetDocFilePath(document.DocumentName);
-                BitmapImage image = new BitmapImage(new Uri(filePath));
-                DisplayedImage.Source = image;
+
+                try
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        var memoryStream = new MemoryStream();
+                        stream.CopyTo(memoryStream);
+                        memoryStream.Position = 0;
+
+                        BitmapImage image = new BitmapImage();
+                        image.BeginInit();
+                        image.CacheOption = BitmapCacheOption.OnLoad;
+                        image.StreamSource = memoryStream;
+                        image.EndInit();
+                        DisplayedImage.Source = image;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading image: {ex.Message}");
+                }
             }
 
             string ocrTextFile = _fileService.GetOcrFilePath(document.DocumentName);
-            if(File.Exists(ocrTextFile))
+            if (File.Exists(ocrTextFile))
             {
                 string ocrText = File.ReadAllText(ocrTextFile);
                 DisplayedOcr.Text = ocrText;
+            }
+            else
+            {
+                DisplayedOcr.Text = "";
             }
         }
 
         private void DeleteDocument(DocumentGridVM document)
         {
             _documentService.DeleteDocument(document.Id);
+            DisplayedOcr.Text = "";
             LoadFromDatabase();
         }
 

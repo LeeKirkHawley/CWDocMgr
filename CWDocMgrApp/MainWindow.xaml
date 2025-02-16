@@ -37,18 +37,20 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5">
+            <Grid HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Border BorderBrush="Black" BorderThickness="2" CornerRadius="0" Margin="5" Grid.Column="0">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <Image x:Name="DisplayedImage" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        <Image x:Name="DisplayedImage" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     </ScrollViewer>
                 </Border>
                 <Border BorderBrush="Black" BorderThickness="2" CornerRadius="0" Margin="5" Grid.Column="1">
-                    <TextBlock x:Name="DisplayedOcr" TextWrapping="NoWrap"  Background="white" />
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <TextBlock x:Name="DisplayedOcr" TextWrapping="NoWrap"  Background="white" />
+                    </ScrollViewer>
                 </Border>
             </Grid>
         </StackPanel>
