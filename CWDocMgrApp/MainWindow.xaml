@@ -10,7 +10,9 @@
         <StackPanel>
             <Button Content="Upload Documents" Click="UploadButton_Click" HorizontalAlignment="Left" Margin="63,38,0,0" VerticalAlignment="Top"/>
             <DataGrid 
+                x:Name= "DocGrid"
                 ItemsSource="{Binding docCollection, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"
                 AutoGenerateColumns="False" 
                 CanUserAddRows="false" 
                 CanUserDeleteRows="false"
@@ -35,7 +37,10 @@
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Vertical" Grid.Row="1">
-                <Image x:Name="DisplayedImage" Height="242" Width="398" />
+                <StackPanel Orientation="Horizontal">
+                    <Image x:Name="DisplayedImage" Height="242" Width="398" />
+                    <TextBlock x:Name="DisplayedOcr" Height="242" Width="398" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Windows;
@@ -36,6 +37,16 @@ namespace CWDocMgrApp
             }
         }
 
+        private DocumentGridVM _selectedDocument;
+        public DocumentGridVM SelectedDocument
+        {
+            get { return _selectedDocument; }
+            set
+            {
+                _selectedDocument = value;
+                OnPropertyChanged();
+            }
+        }
         public ICommand OcrCommand { get; }
         public ICommand DetailsCommand { get; }
         public ICommand DeleteCommand { get; }
@@ -168,6 +179,9 @@ namespace CWDocMgrApp
 
             };
             _ocrService.DoOcr(docModel);
+
+            SelectedDocument = document;
+            ViewDocumentDetails(document);
         }
 
         private void ViewDocumentDetails(DocumentGridVM document)
@@ -181,6 +195,13 @@ namespace CWDocMgrApp
                 string filePath = _fileService.GetDocFilePath(document.DocumentName);
                 BitmapImage image = new BitmapImage(new Uri(filePath));
                 DisplayedImage.Source = image;
+            }
+
+            string ocrTextFile = _fileService.GetOcrFilePath(document.DocumentName);
+            if(File.Exists(ocrTextFile))
+            {
+                string ocrText = File.ReadAllText(ocrTextFile);
+                DisplayedOcr.Text = ocrText;
             }
         }
 
