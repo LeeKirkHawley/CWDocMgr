@@ -22,6 +22,7 @@ namespace CWDocMgrApp
         private readonly IDocumentService _documentService;
         private readonly IUserService _userService;
         private readonly IFileService _fileService;
+        private readonly IOCRService _ocrService;
         private readonly IMapper _mapper;
 
         public ObservableCollection<DocumentGridVM> _docCollection = [];
@@ -35,7 +36,7 @@ namespace CWDocMgrApp
             }
         }
 
-        public ICommand EditCommand { get; }
+        public ICommand OcrCommand { get; }
         public ICommand DetailsCommand { get; }
         public ICommand DeleteCommand { get; }
 
@@ -43,19 +44,21 @@ namespace CWDocMgrApp
         public MainWindow() { }
 
         public MainWindow(IAccountService accountService, IDocumentService documentService,
-            IUserService userService, IFileService fileService, IMapper mapper)
+            IUserService userService, IFileService fileService, IOCRService ocrService, IMapper mapper)
         {
             _accountService = accountService;
             _documentService = documentService;
             _userService = userService;
             _fileService = fileService;
             _mapper = mapper;
+            _ocrService = ocrService;
 
             InitializeComponent();
 
             docCollection = new ObservableCollection<DocumentGridVM>
             {
                 new DocumentGridVM{
+                    Id = 1,
                     DocumentName = "SomeDoc",
                     OriginalDocumentName = "OriginalDoc",
                     UserName = "Fred",
@@ -82,7 +85,7 @@ namespace CWDocMgrApp
 
             // TEMPORARY 
 
-            EditCommand = new RelayCommand<DocumentGridVM>(EditDocument);
+            OcrCommand = new RelayCommand<DocumentGridVM>(OcrDocument);
             DetailsCommand = new RelayCommand<DocumentGridVM>(ViewDocumentDetails);
             DeleteCommand = new RelayCommand<DocumentGridVM>(DeleteDocument);
 
@@ -108,6 +111,7 @@ namespace CWDocMgrApp
             {
                 DocumentGridVM vm = new DocumentGridVM
                 {
+                    Id = doc.Id,
                     DocumentName = doc.DocumentName,
                     OriginalDocumentName = doc.OriginalDocumentName,
                     UserName = user.userName,
@@ -150,18 +154,20 @@ namespace CWDocMgrApp
                 var newCollection = _documentService.UploadDocuments(openFileDlg.FileNames, _accountService.loggedInUser);
 
                 LoadFromDatabase();
-                //docCollection.Clear();
-                //foreach (DocumentGridVM vm in newCollection)
-                //{
-                //    docCollection.Add(vm);
-                //}
             }
         }
 
-        private void EditDocument(DocumentGridVM document)
+        private void OcrDocument(DocumentGridVM document)
         {
-            // Implement edit logic here
-            MessageBox.Show($"Edit {document.DocumentName}");
+            DocumentModel docModel = new DocumentModel {
+                Id = document.Id,
+                DocumentName = document.DocumentName,
+                OriginalDocumentName = document.OriginalDocumentName,
+                DocumentDate = document.DocumentDate,
+                UserId = _userService.GetAllowedUser(document.UserName).Id
+
+            };
+            _ocrService.DoOcr(docModel);
         }
 
         private void ViewDocumentDetails(DocumentGridVM document)
@@ -180,8 +186,8 @@ namespace CWDocMgrApp
 
         private void DeleteDocument(DocumentGridVM document)
         {
-            // Implement delete logic here
-            MessageBox.Show($"Delete {document.DocumentName}");
+            _documentService.DeleteDocument(document.Id);
+            LoadFromDatabase();
         }
 
 

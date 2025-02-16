@@ -87,7 +87,7 @@ namespace DocMgrLib.Services
 
             await _applicationDbContext.SaveChangesAsync();
 
-            string documentFilePath = Path.Combine(_configuration["ServerDocumentStorePath"], documentModel.DocumentName);
+            string documentFilePath = Path.Combine(_configuration["DocumentStorePath"], documentModel.DocumentName);
             if (File.Exists(documentFilePath))
             {
                 _logger.LogInformation($"Deleting file {documentFilePath}");
@@ -213,9 +213,10 @@ namespace DocMgrLib.Services
 
 
                 UserModel user = _applicationDbContext.Users.Where(u => u.userName == User.Identities.ToArray()[0].Name).FirstOrDefault();
-                CreateDocument(user, originalFileName, documentFilePath);
+                DocumentModel newDocument = CreateDocument(user, originalFileName, documentFilePath);
 
                 DocumentGridVM doc = new DocumentGridVM { 
+                    Id = newDocument.Id,
                     UserName = user.userName,
                     OriginalDocumentName = originalFileName,
                     DocumentName = fileName,

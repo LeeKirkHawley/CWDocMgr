@@ -26,7 +26,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
-                                    <Button Content="Edit" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
+                                    <Button Content="Ocr" Command="{Binding DataContext.OcrCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
                                     <Button Content="Delete" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
                                 </StackPanel>
                             </DataTemplate>
@@ -36,13 +36,6 @@
             </DataGrid>
             <StackPanel Orientation="Vertical" Grid.Row="1">
                 <Image x:Name="DisplayedImage" Height="242" Width="398" />
-
-                <!--<Label Content="Name"></Label>
-                <TextBox Margin="5, 0, 5, 15" Text="{Binding SelectedItem.Name, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Content="Serial Number" />
-                <TextBox Margin="5, 0, 5, 15" Text="{Binding SelectedItem.SerialNumber, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Content="Quantity" />
-                <TextBox Margin="5, 0, 5, 15" Text="{Binding SelectedItem.Quantity, UpdateSourceTrigger=PropertyChanged}"/>-->
             </StackPanel>
         </StackPanel>
 
