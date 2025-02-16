@@ -8,6 +8,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace CWDocMgrApp
 {
@@ -19,6 +21,7 @@ namespace CWDocMgrApp
         private readonly IAccountService _accountService;
         private readonly IDocumentService _documentService;
         private readonly IUserService _userService;
+        private readonly IFileService _fileService;
         private readonly IMapper _mapper;
 
         public ObservableCollection<DocumentGridVM> _docCollection = [];
@@ -32,14 +35,20 @@ namespace CWDocMgrApp
             }
         }
 
+        public ICommand EditCommand { get; }
+        public ICommand DetailsCommand { get; }
+        public ICommand DeleteCommand { get; }
+
+
         public MainWindow() { }
 
-        public MainWindow(IAccountService accountService, IDocumentService documentService, 
-            IUserService userService, IMapper mapper)
+        public MainWindow(IAccountService accountService, IDocumentService documentService,
+            IUserService userService, IFileService fileService, IMapper mapper)
         {
             _accountService = accountService;
             _documentService = documentService;
             _userService = userService;
+            _fileService = fileService;
             _mapper = mapper;
 
             InitializeComponent();
@@ -72,6 +81,11 @@ namespace CWDocMgrApp
             //}
 
             // TEMPORARY 
+
+            EditCommand = new RelayCommand<DocumentGridVM>(EditDocument);
+            DetailsCommand = new RelayCommand<DocumentGridVM>(ViewDocumentDetails);
+            DeleteCommand = new RelayCommand<DocumentGridVM>(DeleteDocument);
+
             _accountService.Login("Kirk", "pwd");
 
             LoadFromDatabase();
@@ -80,17 +94,17 @@ namespace CWDocMgrApp
         private void LoadFromDatabase()
         {
             ClaimsPrincipal? loggedInUser = _accountService.loggedInUser;
-            if(loggedInUser == null)
+            if (loggedInUser == null || loggedInUser.Identity?.Name == null)
             {
                 return;
             }
 
             ClaimsIdentity identity = loggedInUser.Identities.ToArray()[0];
-            UserModel user = _userService.GetAllowedUser(_accountService.loggedInUser?.Identity?.Name);
-            IEnumerable<DocumentModel> docsFromDB = _documentService.GetDocuments(user, 1, 20);
+            UserModel user = _userService.GetAllowedUser(loggedInUser.Identity.Name);
+            IEnumerable<DocumentModel> docsFromDB = _documentService.GetDocuments(user, 1, 10);
 
             List<DocumentGridVM> vms = new List<DocumentGridVM>();
-            foreach(DocumentModel doc in docsFromDB)
+            foreach (DocumentModel doc in docsFromDB)
             {
                 DocumentGridVM vm = new DocumentGridVM
                 {
@@ -104,7 +118,7 @@ namespace CWDocMgrApp
             }
 
             docCollection.Clear();
-            foreach(DocumentGridVM vm in vms)
+            foreach (DocumentGridVM vm in vms)
             {
                 docCollection.Add(vm);
             }
@@ -144,11 +158,66 @@ namespace CWDocMgrApp
             }
         }
 
+        private void EditDocument(DocumentGridVM document)
+        {
+            // Implement edit logic here
+            MessageBox.Show($"Edit {document.DocumentName}");
+        }
+
+        private void ViewDocumentDetails(DocumentGridVM document)
+        {
+            if (document.DocumentName.Contains(".pdf"))
+            {
+                DisplayedImage.Source = null;
+            }
+            else
+            {
+                string filePath = _fileService.GetDocFilePath(document.DocumentName);
+                BitmapImage image = new BitmapImage(new Uri(filePath));
+                DisplayedImage.Source = image;
+            }
+        }
+
+        private void DeleteDocument(DocumentGridVM document)
+        {
+            // Implement delete logic here
+            MessageBox.Show($"Delete {document.DocumentName}");
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+        public class RelayCommand<T> : ICommand
+        {
+            private readonly Action<T> _execute;
+            private readonly Func<T, bool> _canExecute;
+
+            public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
+            {
+                _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+                _canExecute = canExecute;
+            }
+
+            public bool CanExecute(object parameter)
+            {
+                return _canExecute == null || _canExecute((T)parameter);
+            }
+
+            public void Execute(object parameter)
+            {
+                _execute((T)parameter);
+            }
+
+            public event EventHandler CanExecuteChanged
+            {
+                add { CommandManager.RequerySuggested += value; }
+                remove { CommandManager.RequerySuggested -= value; }
+            }
+
+        }
     }
 }

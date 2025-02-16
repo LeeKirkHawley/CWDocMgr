@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CWDocMgrApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="650" Width="800">
     <Grid>
         <StackPanel>
             <Button Content="Upload Documents" Click="UploadButton_Click" HorizontalAlignment="Left" Margin="63,38,0,0" VerticalAlignment="Top"/>
@@ -17,12 +17,34 @@
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="User Name" Binding="{Binding UserName}" Width="4*"/>
+                    <DataGridTextColumn Header="User Name" Binding="{Binding UserName}" Width="2*"/>
                     <DataGridTextColumn Header="Document Name" Binding="{Binding DocumentName}" Width="2*"/>
                     <DataGridTextColumn Header="Original Name" Binding="{Binding OriginalDocumentName}" Width="2*"/>
                     <DataGridTextColumn Header="Document Date" Binding="{Binding DocumentDate}" Width="2*"/>
-                </DataGrid.Columns>                
-            </DataGrid> 
+                    <DataGridTemplateColumn Header="Actions">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
+                                    <Button Content="Edit" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
+                                    <Button Content="Delete" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Margin="2"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Orientation="Vertical" Grid.Row="1">
+                <Image x:Name="DisplayedImage" Height="242" Width="398" />
+
+                <!--<Label Content="Name"></Label>
+                <TextBox Margin="5, 0, 5, 15" Text="{Binding SelectedItem.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Serial Number" />
+                <TextBox Margin="5, 0, 5, 15" Text="{Binding SelectedItem.SerialNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Quantity" />
+                <TextBox Margin="5, 0, 5, 15" Text="{Binding SelectedItem.Quantity, UpdateSourceTrigger=PropertyChanged}"/>-->
+            </StackPanel>
         </StackPanel>
+
     </Grid>
 </Window>

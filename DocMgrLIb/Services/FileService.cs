@@ -31,7 +31,7 @@ namespace DocMgrLib.Services
 
         public string GetDocFilePath(string fileName)
         {
-            return Path.Combine(_configuration["ServerDocumentStorePath"], fileName);
+            return Path.Combine(_configuration["DocumentStorePath"], fileName);
         }
     }
 }
