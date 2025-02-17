@@ -1,6 +1,6 @@
 2/17/2025
 
-The CWDocMgrApp project is a WPF front end that uses the DLL I previously wrote for CWDocs.
+The CWDocMgrApp project is a WPF executable version of the CWDocMgr web app.
 
 The CWDocMgr solution as of 4 or 5 days ago was basically an ASP.NET web application. Motivated by a job application, I decided to add a WPF version 
 as quickly as possible. I didn’t know WPF at the time, so I had to learn.
