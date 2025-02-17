@@ -51,7 +51,6 @@ namespace CWDocMgrApp
             }
         }
         public ICommand OcrCommand { get; }
-        public ICommand DetailsCommand { get; }
         public ICommand DeleteCommand { get; }
 
 
@@ -69,16 +68,6 @@ namespace CWDocMgrApp
 
             InitializeComponent();
 
-            docCollection = new ObservableCollection<DocumentGridVM>
-                {
-                    new DocumentGridVM{
-                        Id = 1,
-                        DocumentName = "SomeDoc",
-                        OriginalDocumentName = "OriginalDoc",
-                        UserName = "Fred",
-                        DocumentDate = 123456789
-                    }
-                };
             DataContext = this;
 
             // PERMANENT
@@ -100,7 +89,6 @@ namespace CWDocMgrApp
             // TEMPORARY 
 
             OcrCommand = new RelayCommand<DocumentGridVM>(OcrDocument);
-            DetailsCommand = new RelayCommand<DocumentGridVM>(ViewDocumentDetails);
             DeleteCommand = new RelayCommand<DocumentGridVM>(DeleteDocument);
 
             _accountService.Login("Kirk", "pwd");
@@ -108,16 +96,16 @@ namespace CWDocMgrApp
             LoadFromDatabase();
         }
 
-        private void LoadFromDatabase()
+        public void LoadFromDatabase()
         {
             ClaimsPrincipal? loggedInUser = _accountService.loggedInUser;
             if (loggedInUser == null || loggedInUser.Identity?.Name == null)
             {
                 return;
             }
-
             ClaimsIdentity identity = loggedInUser.Identities.ToArray()[0];
             UserModel user = _userService.GetAllowedUser(loggedInUser.Identity.Name);
+
             IEnumerable<DocumentModel> docsFromDB = _documentService.GetDocuments(user, 1, 10);
 
             List<DocumentGridVM> vms = new List<DocumentGridVM>();
@@ -153,7 +141,7 @@ namespace CWDocMgrApp
             openFileDlg.DefaultExt = ".jpg;*.png;*.pdf";
             openFileDlg.Filter = "Image and PDF Files|*.jpg;*.jpeg;*.png;*.pdf|JPEG Files|*.jpg;*.jpeg|PNG Files|*.png|PDF Files|*.pdf";
 
-            Nullable<bool> result = openFileDlg.ShowDialog();
+            bool? result = openFileDlg.ShowDialog();
 
             if (result == true)
             {
@@ -191,6 +179,7 @@ namespace CWDocMgrApp
         {
             if (document.DocumentName.Contains(".pdf"))
             {
+                // haven't implemented PDF display yet
                 DisplayedImage.Source = null;
             }
             else
@@ -199,19 +188,7 @@ namespace CWDocMgrApp
 
                 try
                 {
-                    using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        var memoryStream = new MemoryStream();
-                        stream.CopyTo(memoryStream);
-                        memoryStream.Position = 0;
-
-                        BitmapImage image = new BitmapImage();
-                        image.BeginInit();
-                        image.CacheOption = BitmapCacheOption.OnLoad;
-                        image.StreamSource = memoryStream;
-                        image.EndInit();
-                        DisplayedImage.Source = image;
-                    }
+                    ReadDocumentFile(filePath);
                 }
                 catch (Exception ex)
                 {
@@ -228,6 +205,23 @@ namespace CWDocMgrApp
             else
             {
                 DisplayedOcr.Text = "";
+            }
+        }
+
+        private void ReadDocumentFile(string filePath)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                var memoryStream = new MemoryStream();
+                stream.CopyTo(memoryStream);
+                memoryStream.Position = 0;
+
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.StreamSource = memoryStream;
+                image.EndInit();
+                DisplayedImage.Source = image;
             }
         }
 

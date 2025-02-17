@@ -1,7 +1,6 @@
 ﻿using DocMgrLib.Data;
 using DocMgrLib.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
@@ -30,9 +29,6 @@ namespace DocMgrLib.Services
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-
-            // get paginated Documents      
-            //List<DocumentModel> docList = _applicationDbContext.Documents.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             FillDocDateStrings(docList);
 
@@ -112,7 +108,7 @@ namespace DocMgrLib.Services
             foreach (var file in files)
             {
                 // Extract file name from whatever was posted by browser
-                var originalFileName = System.IO.Path.GetFileName(file.FileName);
+                var originalFileName = Path.GetFileName(file.FileName);
                 string imageFileExtension = Path.GetExtension(originalFileName);
 
                 var fileName = Guid.NewGuid().ToString() + imageFileExtension;
