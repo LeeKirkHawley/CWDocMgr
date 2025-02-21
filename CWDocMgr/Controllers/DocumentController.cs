@@ -4,6 +4,7 @@ using DocMgrLib.Data;
 using CWDocMgr.Models;
 using DocMgrLib.Services;
 using DocMgrLib.Models;
+using CWDocMgr.Services;
 
 namespace CWDocMgr.Controllers
 {
@@ -15,10 +16,11 @@ namespace CWDocMgr.Controllers
         private readonly ILogger<DocumentController> _logger;
         private readonly IOCRService _ocrService;
         private readonly IFileService _fileService;
+        private readonly IAccountService _accountService;
 
         public DocumentController(ApplicationDbContext context, IConfiguration configuration, 
             IDocumentService documentService, ILogger<DocumentController> logger,
-            IOCRService ocrService, IFileService fileService)
+            IOCRService ocrService, IFileService fileService, IAccountService accountService)
         {
             _context = context;
             _configuration = configuration;
@@ -26,20 +28,20 @@ namespace CWDocMgr.Controllers
             _logger = logger;
             _ocrService = ocrService;
             _fileService = fileService;
+            _accountService = accountService;
         }
 
         // GET: DocumentModels
         public async Task<IActionResult> Index()
         {
-            System.Security.Claims.ClaimsIdentity user = HttpContext.User.Identities.ToArray()[0];
-
             IndexViewModel indexViewModel = new IndexViewModel
             {
                 Documents = await _context.Documents
                     .Include(d => d.User)
                     .ToListAsync(),
                 TotalPages = _documentService.GetTotalDocuments(),
-                PageNumber = 0
+                PageNumber = 0,
+                User = _accountService.LoggedInUser
             };
 
             _documentService.FillDocDateStrings(indexViewModel.Documents);
@@ -84,14 +86,16 @@ namespace CWDocMgr.Controllers
         [HttpGet]
         public IActionResult UploadDoc()
         {
-
-            var user = HttpContext.User.Identities.ToArray()[0];
-            if (!user.IsAuthenticated)
+            UserModel user = _accountService.LoggedInUser;
+            if (user == null)
             {
                 return RedirectToAction("login", "account");
             }
 
-            UploadDocsViewModel model = new UploadDocsViewModel();
+            var model = new UploadDocsViewModel {
+                User = user,
+                OriginalFileName = "",
+            };
 
             return View(model);
         }
@@ -99,7 +103,8 @@ namespace CWDocMgr.Controllers
         [HttpPost]
         public ActionResult UploadDoc(UploadDocsViewModel model, IFormFile[] files)
         {
-            _documentService.UploadDocuments(model, files, HttpContext.User);
+            var user = _context.Users.Find(model.User.Id);
+            _documentService.UploadDocuments(model, files, user);
 
             // redirect to home page
             return Redirect("/Document");

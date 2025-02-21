@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CWDocMgrApp.Services;
 using DocMgrLib.Models;
 using DocMgrLib.Services;
 using Microsoft.Win32;
@@ -98,13 +99,12 @@ namespace CWDocMgrApp
 
         public void LoadFromDatabase()
         {
-            ClaimsPrincipal? loggedInUser = _accountService.loggedInUser;
-            if (loggedInUser == null || loggedInUser.Identity?.Name == null)
+            UserModel user = _accountService.LoggedInUser;
+            if (user == null)
             {
                 return;
             }
-            ClaimsIdentity identity = loggedInUser.Identities.ToArray()[0];
-            UserModel user = _userService.GetAllowedUser(loggedInUser.Identity.Name);
+//            UserModel user = _userService.GetAllowedUser(loggedInUser.Identity.Name);
 
             IEnumerable<DocumentModel> docsFromDB = _documentService.GetDocuments(user, 1, 10);
 
@@ -116,7 +116,7 @@ namespace CWDocMgrApp
                     Id = doc.Id,
                     DocumentName = doc.DocumentName,
                     OriginalDocumentName = doc.OriginalDocumentName,
-                    UserName = user.userName,
+                    UserName = user.UserName,
                     DocumentDate = doc.DocumentDate
                 };
 
@@ -147,12 +147,9 @@ namespace CWDocMgrApp
             {
                 string filename = openFileDlg.FileName;
 
-                UploadDocsViewModel uploadDpcsVM = new UploadDocsViewModel
-                {
-                    OriginalFileName = filename
-                };
+                UserModel user = _accountService.LoggedInUser;
 
-                var newCollection = _documentService.UploadDocuments(openFileDlg.FileNames, _accountService.loggedInUser);
+                var newCollection = _documentService.UploadDocuments(openFileDlg.FileNames, user);
 
                 LoadFromDatabase();
             }

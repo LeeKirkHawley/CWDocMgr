@@ -6,6 +6,12 @@
 }
 
 <form method="post" enctype="multipart/form-data" asp-controller="Document" asp-action="UploadDoc">
+    <input type="hidden" asp-for="User.Id" />
+    <input type="hidden" asp-for="User.UserName" />
+    <input type="hidden" asp-for="User.Pwd" />
+    <input type="hidden" asp-for="User.Role" />
+    <input type="hidden" asp-for="OriginalFileName" />
+    
     <br>
     <div>
         <div class="row">

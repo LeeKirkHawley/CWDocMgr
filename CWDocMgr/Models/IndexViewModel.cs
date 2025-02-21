@@ -4,9 +4,7 @@ namespace CWDocMgr.Models
 {
     public record IndexViewModel
     {
-        public IndexViewModel() { }
-
-
+        public UserModel User { get; set; }
 
         public IEnumerable<DocumentModel>? Documents { get; set; }
 

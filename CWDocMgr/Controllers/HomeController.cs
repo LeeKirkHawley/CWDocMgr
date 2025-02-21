@@ -2,6 +2,8 @@ using DocMgrLib.Data;
 using CWDocMgr.Models;
 using DocMgrLib.Services;
 using Microsoft.AspNetCore.Mvc;
+using CWDocMgr.Services;
+using DocMgrLib.Models;
 
 namespace CWDocMgr.Controllers
 {
@@ -11,24 +13,31 @@ namespace CWDocMgr.Controllers
         IDocumentService _documentService;
         IConfiguration _configuration;
         ApplicationDbContext _applicationDbContext;
+        IAccountService _accountService;
 
         public HomeController(ILogger<HomeController> logger, 
             IDocumentService documentService, 
             IConfiguration configuration,
-            ApplicationDbContext applicationDbContext)
+            ApplicationDbContext applicationDbContext, 
+            IAccountService accountService)
         {
             _logger = logger;
             _documentService = documentService;
             _configuration = configuration;
             _applicationDbContext = applicationDbContext;
+            _accountService = accountService;
         }
 
         public IActionResult Index(int page = 1, int pageSize = 10)
         {
-            var user = HttpContext.User.Identities.ToArray()[0];
-            if (!user.IsAuthenticated)
+            var user = _accountService.LoggedInUser;
+
+            if (user == null)
             {
-                return Redirect("/Identity/Account/Login");
+                //return Redirect("/Identity/Account/Login");
+                return Redirect("/Home/Login");
+                //_accountService.Login("Kirk", "pwd");
+
             }
 
             //int totalDocuments = _documentService.GetTotalDocuments();
@@ -50,20 +59,39 @@ namespace CWDocMgr.Controllers
             return View();
         }
 
-        //[HttpGet]
-        //public IActionResult UploadDoc()
-        //{
+        [HttpGet]
+        public IActionResult Login()
+        {
+            //LoginViewModel model = new LoginViewModel();
 
-        //    var user = HttpContext.User.Identities.ToArray()[0];
-        //    if (!user.IsAuthenticated)
-        //    {
-        //        return RedirectToAction("login", "account");
-        //    }
+            return View();
 
-        //    UploadDocsViewModel model = new UploadDocsViewModel();
+            //var user = HttpContext.User.Identities.ToArray()[0];
+            //if (!user.IsAuthenticated)
+            //{
+            //    return RedirectToAction("login", "account");
+            //}
 
-        //    return View(model);
-        //}
+            //UploadDocsViewModel model = new UploadDocsViewModel();
+
+            //return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Login(string username, string password)
+        {
+            UserModel user = _accountService.Login(username, password);
+
+            if (user != null)
+            {
+                // Redirect to a different page on successful login
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Return the view with an error message on failed login
+            ViewBag.ErrorMessage = "Invalid username or password";
+            return View();
+        }
 
         //[HttpPost]
         //public ActionResult UploadDoc(UploadDocsViewModel model, IFormFile[] files)

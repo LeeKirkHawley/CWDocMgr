@@ -28,7 +28,7 @@ namespace CWDocMgrTests.ControllerTests
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
-            _inMemoryApplicationDbContext = new ApplicationDbContext(null, options);
+            _inMemoryApplicationDbContext = new ApplicationDbContext(_mockConfiguration.Object);
 
 
             _mockLogger = new Mock<ILogger<HomeController>>();

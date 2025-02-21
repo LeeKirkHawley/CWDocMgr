@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using DocMgrLib.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace CWDocMgr.Models
 {
     public record OcrFileModel
     {
+        public required UserModel User { get; set; }
+
         public string OCRText { get; set; }
         public string OriginalFileName { get; set; }
 

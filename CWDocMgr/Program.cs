@@ -1,10 +1,8 @@
+using CWDocMgr.Services;
 using DocMgrLib.Data;
 using DocMgrLib.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +13,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -27,6 +26,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IOCRService, OCRService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

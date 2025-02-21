@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
-using System.Security.Claims;
 
 namespace DocMgrLib.Services
 {
@@ -95,13 +94,13 @@ namespace DocMgrLib.Services
             }
         }
 
-        public void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, ClaimsPrincipal User)
+        public void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, UserModel User)
         {
-            ClaimsIdentity identity = User.Identities.ToArray()[0];
-            if (!identity.IsAuthenticated)
-            {
-                throw new Exception("user is not logged in.");
-            }
+            //ClaimsIdentity identity = User.Identities.ToArray()[0];
+            //if (!identity.IsAuthenticated)
+            //{
+            //    throw new Exception("user is not logged in.");
+            //}
 
             DateTime startTime = DateTime.Now;
 
@@ -148,18 +147,18 @@ namespace DocMgrLib.Services
                     throw;
                 }
 
-                UserModel user = _applicationDbContext.Users.Where(u => u.userName == User.Identities.ToArray()[0].Name).FirstOrDefault();
+                UserModel user = _applicationDbContext.Users.Where(u => u.Id == User.Id).FirstOrDefault();
                 CreateDocument(user, originalFileName, documentFilePath);
             }
         }
 
-        public ObservableCollection<DocumentGridVM> UploadDocuments(string[] files, ClaimsPrincipal User)
+        public ObservableCollection<DocumentGridVM> UploadDocuments(string[] files, UserModel User)
         {
-            ClaimsIdentity identity = User.Identities.ToArray()[0];
-            if (!identity.IsAuthenticated)
-            {
-                throw new Exception("user is not logged in.");
-            }
+            //ClaimsIdentity identity = User.Identities.ToArray()[0];
+            //if (!identity.IsAuthenticated)
+            //{
+            //    throw new Exception("user is not logged in.");
+            //}
 
             DateTime startTime = DateTime.Now;
 
@@ -208,12 +207,12 @@ namespace DocMgrLib.Services
 
 
 
-                UserModel user = _applicationDbContext.Users.Where(u => u.userName == User.Identities.ToArray()[0].Name).FirstOrDefault();
+                UserModel user = _applicationDbContext.Users.Where(u => u.Id == User.Id).FirstOrDefault();
                 DocumentModel newDocument = CreateDocument(user, originalFileName, documentFilePath);
 
                 DocumentGridVM doc = new DocumentGridVM { 
                     Id = newDocument.Id,
-                    UserName = user.userName,
+                    UserName = user.UserName,
                     OriginalDocumentName = originalFileName,
                     DocumentName = fileName,
                     DocumentDate = DateTime.Now.Ticks

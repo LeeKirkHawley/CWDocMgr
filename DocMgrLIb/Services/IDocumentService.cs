@@ -11,8 +11,8 @@ namespace DocMgrLib.Services
         int GetTotalDocuments();
         DocumentModel CreateDocument(UserModel user, string originalFileName, string documentFilePath);
         void DeleteDocument(int id);
-        void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, ClaimsPrincipal User);
-        ObservableCollection<DocumentGridVM> UploadDocuments(string[] files, ClaimsPrincipal User);
+        void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, UserModel User);
+        ObservableCollection<DocumentGridVM> UploadDocuments(string[] files, UserModel User);
         void FillDocDateStrings(IEnumerable<DocumentModel> docList);
         string GetDocFilePath(string fileName);
     }
