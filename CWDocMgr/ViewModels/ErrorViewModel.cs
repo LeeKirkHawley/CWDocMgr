@@ -1,4 +1,4 @@
-namespace CWDocMgr.Models
+namespace CWDocMgr.ViewModels
 {
     public class ErrorViewModel
     {

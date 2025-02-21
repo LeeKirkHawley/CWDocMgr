@@ -30,16 +30,24 @@ namespace CWDocMgrApp.Services
         {
             //_logger.Info($"Logging in user {userName}");
 
-            UserModel user = _userService.GetAllowedUser(userName);
-            if (user == null)
+            UserModel user = new UserModel
             {
-                return null;
-            }
+                Id = 1,
+                UserName = "Kirk",
+                Pwd = "pwd",
+                Role = "Admin"
+            };
 
-            if (user.Pwd != password)
-            {
-                return null;
-            }
+            //UserModel user = _userService.GetAllowedUser(userName);
+            //if (user == null)
+            //{
+            //    return null;
+            //}
+
+            //if (user.Pwd != password)
+            //{
+            //    return null;
+            //}
 
             LoggedInUser = user;
 

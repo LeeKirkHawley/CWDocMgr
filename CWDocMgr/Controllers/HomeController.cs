@@ -4,6 +4,7 @@ using DocMgrLib.Services;
 using Microsoft.AspNetCore.Mvc;
 using CWDocMgr.Services;
 using DocMgrLib.Models;
+using CWDocMgr.ViewModels;
 
 namespace CWDocMgr.Controllers
 {

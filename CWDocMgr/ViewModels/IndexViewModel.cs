@@ -1,6 +1,6 @@
 ﻿using DocMgrLib.Models;
 
-namespace CWDocMgr.Models
+namespace CWDocMgr.ViewModels
 {
     public record IndexViewModel
     {

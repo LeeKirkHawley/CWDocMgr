@@ -1,4 +1,4 @@
-﻿@model DocMgrLib.Models.DocumentModel
+﻿@model CWDocMgr.ViewModels.DocumentDetailsVM
 
 @{
     ViewData["Title"] = "Details";
@@ -29,10 +29,10 @@
             @Html.DisplayFor(model => model.OriginalDocumentName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
+            @Html.DisplayNameFor(model => model.DocumentDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
+            @Html.DisplayFor(model => model.DocumentDate)
         </dd>
     </dl>
 </div>
@@ -41,7 +41,16 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <div>
-    <img class="img" id="image" src="@Model.DocumentName" style="max-width:600px" />
+    @if (ViewBag.FileContent != null)
+    {
+        <div>
+            <img src="@ViewBag.FileContent" alt="Document Image" />
+        </div>
+    }
+    else
+    {
+        <p>Image not found.</p>
+    }
 </div>
 
 @if (@Model.OCRText != "" ) 

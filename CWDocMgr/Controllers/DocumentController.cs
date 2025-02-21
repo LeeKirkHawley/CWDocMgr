@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DocMgrLib.Data;
-using CWDocMgr.Models;
 using DocMgrLib.Services;
 using DocMgrLib.Models;
 using CWDocMgr.Services;
+using CWDocMgr.ViewModels;
 
 namespace CWDocMgr.Controllers
 {
@@ -57,22 +57,31 @@ namespace CWDocMgr.Controllers
                 return NotFound();
             }
 
-            DocumentModel? documentModel = await _context.Documents
+            DocumentModel? document = await _context.Documents
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (documentModel == null)
+            if (document == null)
             {
                 return NotFound();
             }
 
-            string documentFilePath = _configuration["ClientDocumentStorePath"] + "/" + documentModel.DocumentName;
-            documentModel.DocumentName = documentFilePath;
+            string documentFilePath = _configuration["DocumentStorePath"] + "/" + document.DocumentName;
+            if (System.IO.File.Exists(documentFilePath))
+            {
+                byte[] fileBytes = System.IO.File.ReadAllBytes(documentFilePath);
+                string base64String = Convert.ToBase64String(fileBytes);
+                ViewBag.FileContent = $"data:image/jpeg;base64,{base64String}";
+            }
+            else
+            {
+                ViewBag.FileContent = "File not found.";
+            }
 
             string ocrFilePath = _fileService.GetOcrFilePath(documentFilePath);
             if(System.IO.File.Exists(ocrFilePath))
             {
                 try
                 {
-                    documentModel.OCRText = System.IO.File.ReadAllText(ocrFilePath);
+                    document.OCRText = System.IO.File.ReadAllText(ocrFilePath);
                 }
                 catch (Exception)
                 {
@@ -80,7 +89,17 @@ namespace CWDocMgr.Controllers
                 }
             }
 
-            return View(documentModel);
+            DocumentDetailsVM docDetailsVM = new DocumentDetailsVM
+            {
+                Id = document.Id,
+                UserId = document.UserId,
+                DocumentName = document.DocumentName,
+                DocumentDate = document.Date,
+                OriginalDocumentName = document.OriginalDocumentName,
+                OCRText = document.OCRText
+            };
+
+            return View(docDetailsVM);
         }
 
         [HttpGet]
