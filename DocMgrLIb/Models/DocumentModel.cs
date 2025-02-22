@@ -9,7 +9,7 @@ namespace DocMgrLib.Models
         {
             OCRText = "";
             User = null;
-            Date = null;
+            DateString = null;
         }
 
         public int Id { get; set; }
@@ -18,10 +18,10 @@ namespace DocMgrLib.Models
         public virtual UserModel? User { get; set; }
         public required string DocumentName { get; set; }
         public required string OriginalDocumentName { get; set; }
-        public required long DocumentDate { get; set; }
+        public required DateTime DocumentDate { get; set; }
 
         [NotMapped]
-        public string? Date { get; set; }
+        public string? DateString { get; set; }
 
         [NotMapped]
         public string OCRText { get; set; }

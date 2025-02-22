@@ -38,8 +38,9 @@ namespace DocMgrLib.Services
         {
             foreach (DocumentModel doc in docList)
             {
-                var documentDateTime = DateTime.FromBinary(doc.DocumentDate);
-                doc.Date = documentDateTime.ToString("MM/dd/yyyy");
+                //var documentDateTime = DateTime.FromBinary(doc.DocumentDate);
+                //doc.Date = documentDateTime.ToString("MM/dd/yyyy");
+                doc.DateString = doc.DocumentDate.ToShortDateString();
             }
         }
 
@@ -57,7 +58,7 @@ namespace DocMgrLib.Services
                 UserId = user.Id,
                 DocumentName = Path.GetFileName(documentFilePath),
                 OriginalDocumentName = originalFileName,
-                DocumentDate = DateTime.Now.Ticks
+                DocumentDate = DateTime.Now
             }).Entity;
 
             try

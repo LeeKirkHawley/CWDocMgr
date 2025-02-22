@@ -21,9 +21,20 @@ namespace DocMgrLib.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            string sqLiteDbPath = _settings["SQLiteDbPath"];
-            options.UseSqlite($"Data Source={sqLiteDbPath}");
+            string connectionString = _settings.GetConnectionString("DefaultConnection");
+            options.UseSqlServer(connectionString);
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //{
+        //    string sqLiteDbPath = _settings["SQLiteDbPath"];
+        //    options.UseSqlite($"Data Source={sqLiteDbPath}");
+        //}
 
     }
 }

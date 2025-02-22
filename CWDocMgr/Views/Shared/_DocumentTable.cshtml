@@ -17,7 +17,7 @@
                 <td>@doc.OriginalDocumentName</td>
                 <td>@doc.User.UserName</td>
                 <td><a href="@Url.Action("Details", "Document", new { id = doc.Id })">@doc.DocumentName</a></td>
-                <td>@doc.Date</td>
+                <td>@doc.DateString</td>
                 <td>
                     <a asp-controller="Document" asp-action="Edit" asp-route-id="@doc.Id">Edit</a> |
                     <a asp-controller="Document" asp-action="Details" asp-route-id="@doc.Id">Details</a> |

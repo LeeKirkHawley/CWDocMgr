@@ -94,7 +94,7 @@ namespace CWDocMgr.Controllers
                 Id = document.Id,
                 UserId = document.UserId,
                 DocumentName = document.DocumentName,
-                DocumentDate = document.Date,
+                DocumentDate = document.DateString,
                 OriginalDocumentName = document.OriginalDocumentName,
                 OCRText = document.OCRText
             };
