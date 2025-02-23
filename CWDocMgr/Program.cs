@@ -1,5 +1,6 @@
 using CWDocMgr.Services;
 using DocMgrLib.Data;
+using DocMgrLib.Extensions;
 using DocMgrLib.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -13,7 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
           .EnableSensitiveDataLogging()
-          .LogTo(Console.WriteLine, LogLevel.Information));    
+          .LogTo(Console.WriteLine, LogLevel.Information));
+
+builder.Services.AddDocMgrLibAutoMapper();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

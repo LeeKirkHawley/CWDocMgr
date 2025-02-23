@@ -34,17 +34,20 @@ namespace CWDocMgr.Controllers
         // GET: DocumentModels
         public async Task<IActionResult> Index()
         {
+            var documents = await _context.Documents
+                .Where(d => d.UserId == _accountService.LoggedInUser.Id)
+                .ToListAsync();
+
+            IEnumerable<DocumentModelVM> documentModelVMs = _documentService.BuildDocModelVMList(documents);
+
             IndexViewModel indexViewModel = new IndexViewModel
             {
-                Documents = await _context.Documents
-                    .Include(d => d.User)
-                    .ToListAsync(),
+                Documents = documentModelVMs,
                 TotalPages = _documentService.GetTotalDocuments(),
                 PageNumber = 0,
-                User = _accountService.LoggedInUser
             };
 
-            _documentService.FillDocDateStrings(indexViewModel.Documents);
+            indexViewModel.User = _accountService.LoggedInUser;
 
             return View(indexViewModel);
         }
@@ -76,31 +79,21 @@ namespace CWDocMgr.Controllers
                 ViewBag.FileContent = "File not found.";
             }
 
-            string ocrFilePath = _fileService.GetOcrFilePath(documentFilePath);
-            if(System.IO.File.Exists(ocrFilePath))
-            {
-                try
-                {
-                    document.OCRText = System.IO.File.ReadAllText(ocrFilePath);
-                }
-                catch (Exception)
-                {
-                    _logger.LogDebug($"Couldn't read text file {ocrFilePath}");
-                }
-            }
+            string ocrText = _ocrService.GetOcrFileText(documentFilePath);
 
             DocumentDetailsVM docDetailsVM = new DocumentDetailsVM
             {
                 Id = document.Id,
                 UserId = document.UserId,
                 DocumentName = document.DocumentName,
-                DocumentDate = document.DateString,
+                DocumentDate = document.DocumentDate.ToShortDateString(),
                 OriginalDocumentName = document.OriginalDocumentName,
-                OCRText = document.OCRText
+                OCRText = ocrText
             };
 
             return View(docDetailsVM);
         }
+
 
         [HttpGet]
         public IActionResult UploadDoc()

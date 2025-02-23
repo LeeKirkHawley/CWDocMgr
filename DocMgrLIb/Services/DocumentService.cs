@@ -1,4 +1,5 @@
-﻿using DocMgrLib.Data;
+﻿using AutoMapper;
+using DocMgrLib.Data;
 using DocMgrLib.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -11,14 +12,16 @@ namespace DocMgrLib.Services
     {
         private readonly ILogger<DocumentService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
         ApplicationDbContext _applicationDbContext;
 
         public DocumentService(ILogger<DocumentService> logger, ApplicationDbContext applicationDbContext,
-            IConfiguration configuration)
+            IMapper mapper, IConfiguration configuration)
         {
             _logger = logger;
             _applicationDbContext = applicationDbContext;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public IEnumerable<DocumentModel> GetDocuments(UserModel user, int page, int pageSize)
@@ -29,20 +32,18 @@ namespace DocMgrLib.Services
                 .Take(pageSize)
                 .ToList();
 
-            FillDocDateStrings(docList);
-
             return docList;
         }
 
-        public void FillDocDateStrings(IEnumerable<DocumentModel> docList)
-        {
-            foreach (DocumentModel doc in docList)
-            {
-                //var documentDateTime = DateTime.FromBinary(doc.DocumentDate);
-                //doc.Date = documentDateTime.ToString("MM/dd/yyyy");
-                doc.DateString = doc.DocumentDate.ToShortDateString();
-            }
-        }
+        //public void FillDocDateStrings(IEnumerable<DocumentModelVM> docList)
+        //{
+        //    foreach (DocumentModelVM doc in docList)
+        //    {
+        //        var documentDateTime = DateTime.FromBinary(doc.DocumentDate);
+        //        doc.Date = documentDateTime.ToString("MM/dd/yyyy");
+        //        doc.DateString = doc.DocumentDate.ToShortDateString();
+        //    }
+        //}
 
         public int GetTotalDocuments()
         {
@@ -211,7 +212,8 @@ namespace DocMgrLib.Services
                 UserModel user = _applicationDbContext.Users.Where(u => u.Id == User.Id).FirstOrDefault();
                 DocumentModel newDocument = CreateDocument(user, originalFileName, documentFilePath);
 
-                DocumentGridVM doc = new DocumentGridVM { 
+                DocumentGridVM doc = new DocumentGridVM
+                {
                     Id = newDocument.Id,
                     UserName = user.UserName,
                     OriginalDocumentName = originalFileName,
@@ -230,5 +232,34 @@ namespace DocMgrLib.Services
             return Path.Combine(_configuration["DocumentStorePath"], fileName);
         }
 
+        public IEnumerable<DocumentModelVM> BuildDocModelVMList(IEnumerable<DocumentModel> docModels)
+        {
+            var docModelVMs = new List<DocumentModelVM>();
+
+            foreach (DocumentModel docModel in docModels)
+            {
+                var vm = BuildDocumentModelVM(docModel);
+                docModelVMs.Add(vm);
+            }
+
+            return docModelVMs;
+        }
+
+        public DocumentModelVM BuildDocumentModelVM(DocumentModel documentModel)
+        {
+            return new DocumentModelVM
+            {
+                Id = documentModel.Id,
+                UserId = documentModel.UserId,
+                DocumentName = documentModel.DocumentName,
+                OriginalDocumentName = documentModel.OriginalDocumentName,
+                DocumentDate = documentModel.DocumentDate,
+                User = _applicationDbContext.Users.FirstOrDefault(u => u.Id == documentModel.UserId),
+                DateString = documentModel.DocumentDate.ToString("MM/dd/yyyy"),
+                OCRText = "" // Assuming OCRText is not available in DocumentModel and needs to be set separately
+            };
+        }
     }
 }
+
+

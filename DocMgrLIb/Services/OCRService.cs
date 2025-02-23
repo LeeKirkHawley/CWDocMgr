@@ -316,6 +316,26 @@ namespace DocMgrLib.Services
 
         }
 
+        public string GetOcrFileText(string documentFilePath)
+        {
+            string ocrText = "";
+            string ocrFilePath = _fileService.GetOcrFilePath(documentFilePath);
+            if (System.IO.File.Exists(ocrFilePath))
+            {
+                try
+                {
+                    ocrText = System.IO.File.ReadAllText(ocrFilePath);
+                }
+                catch (Exception)
+                {
+                    _logger.LogDebug($"Couldn't read text file {ocrFilePath}");
+                }
+            }
+
+            return ocrText;
+        }
+
+
         public void ImmediateCleanup(string imageFilePath, string imageFileExtension, string textFilePath)
         {
             try

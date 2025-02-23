@@ -32,6 +32,8 @@ namespace CWDocMgrApp
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite());
 
+            services.AddDocMgrLibAutoMapper();
+
             services.AddLogging(configure => configure
                     .AddConsole()
                     .SetMinimumLevel(LogLevel.Debug)

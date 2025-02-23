@@ -13,7 +13,8 @@ namespace DocMgrLib.Services
         void DeleteDocument(int id);
         void UploadDocuments(UploadDocsViewModel model, IFormFile[] files, UserModel User);
         ObservableCollection<DocumentGridVM> UploadDocuments(string[] files, UserModel User);
-        void FillDocDateStrings(IEnumerable<DocumentModel> docList);
+        //void FillDocDateStrings(IEnumerable<DocumentModel> docList);
         string GetDocFilePath(string fileName);
+        IEnumerable<DocumentModelVM> BuildDocModelVMList(IEnumerable<DocumentModel> docModels);
     }
 }
