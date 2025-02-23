@@ -247,17 +247,12 @@ namespace DocMgrLib.Services
 
         public DocumentModelVM BuildDocumentModelVM(DocumentModel documentModel)
         {
-            return new DocumentModelVM
-            {
-                Id = documentModel.Id,
-                UserId = documentModel.UserId,
-                DocumentName = documentModel.DocumentName,
-                OriginalDocumentName = documentModel.OriginalDocumentName,
-                DocumentDate = documentModel.DocumentDate,
-                User = _applicationDbContext.Users.FirstOrDefault(u => u.Id == documentModel.UserId),
-                DateString = documentModel.DocumentDate.ToString("MM/dd/yyyy"),
-                OCRText = "" // Assuming OCRText is not available in DocumentModel and needs to be set separately
-            };
+            DocumentModelVM vm = _mapper.Map<DocumentModelVM>(documentModel);
+            vm.User = _applicationDbContext.Users.FirstOrDefault(u => u.Id == documentModel.UserId);
+            vm.DateString = documentModel.DocumentDate.ToString("MM/dd/yyyy");
+            vm.OCRText = ""; // Assuming OCRText is not available in DocumentModel and needs to be set separately
+
+            return vm;
         }
     }
 }

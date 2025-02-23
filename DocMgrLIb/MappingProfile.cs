@@ -12,7 +12,7 @@ namespace DocMgrLib
     {
         public MappingProfile()
         {
-            CreateMap<DocumentModelVM, DocumentModel>();
+            CreateMap<DocumentModelVM, DocumentModel>().ReverseMap();
             
             
             //CreateMap<DocumentModel, DocumentModelVM>()
