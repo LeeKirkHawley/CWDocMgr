@@ -154,8 +154,6 @@ namespace DocMgrLib.Services
 
         public async Task<string> OCRPDFFile(string pdfName, string outputFile, string language)
         {
-
-            //string outputBase = _configuration["ServerDocumentStorePath"] + "\\" + Path.GetFileNameWithoutExtension(pdfName);
             string fileNameNoExtension = Path.GetFileNameWithoutExtension(pdfName);
 
             string workFolder = _fileService.GetWorkFilePath();

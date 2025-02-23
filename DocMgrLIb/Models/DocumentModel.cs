@@ -5,12 +5,6 @@ namespace DocMgrLib.Models
 {
     public record DocumentModel
     {
-        public DocumentModel()
-        {
-            //OCRText = "";
-            //User = null;
-            //DateString = null;
-        }
 
         public int Id { get; set; }
         public required int UserId { get; set; }
@@ -18,15 +12,5 @@ namespace DocMgrLib.Models
         public required string DocumentName { get; set; }
         public required string OriginalDocumentName { get; set; }
         public required DateTime DocumentDate { get; set; }
-
-        //[NotMapped]
-        //public virtual UserModel? User { get; set; }
-
-        //[NotMapped]
-        //public string? DateString { get; set; }
-
-        //[NotMapped]
-        //public string OCRText { get; set; }
-
     }
 }

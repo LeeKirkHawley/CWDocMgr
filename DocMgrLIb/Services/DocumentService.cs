@@ -35,19 +35,8 @@ namespace DocMgrLib.Services
             return docList;
         }
 
-        //public void FillDocDateStrings(IEnumerable<DocumentModelVM> docList)
-        //{
-        //    foreach (DocumentModelVM doc in docList)
-        //    {
-        //        var documentDateTime = DateTime.FromBinary(doc.DocumentDate);
-        //        doc.Date = documentDateTime.ToString("MM/dd/yyyy");
-        //        doc.DateString = doc.DocumentDate.ToShortDateString();
-        //    }
-        //}
-
         public int GetTotalDocuments()
         {
-            // get the total number of documents in the Documents table
             return _applicationDbContext.Documents.Count();
         }
 
@@ -250,7 +239,7 @@ namespace DocMgrLib.Services
             DocumentModelVM vm = _mapper.Map<DocumentModelVM>(documentModel);
             vm.User = _applicationDbContext.Users.FirstOrDefault(u => u.Id == documentModel.UserId);
             vm.DateString = documentModel.DocumentDate.ToString("MM/dd/yyyy");
-            vm.OCRText = ""; // Assuming OCRText is not available in DocumentModel and needs to be set separately
+            vm.OCRText = "";
 
             return vm;
         }
