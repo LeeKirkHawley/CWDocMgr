@@ -5,10 +5,12 @@ using DocMgrLib.Services;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
@@ -117,7 +119,7 @@ namespace CWDocMgrApp
                     DocumentName = doc.DocumentName,
                     OriginalDocumentName = doc.OriginalDocumentName,
                     UserName = user.UserName,
-                    DocumentDate = doc.DocumentDate
+                    DocumentDate = doc.DocumentDate.ToString("MM/dd/yyyy")
                 };
 
                 vms.Add(vm);
@@ -157,13 +159,17 @@ namespace CWDocMgrApp
 
         private void OcrDocument(DocumentGridVM document)
         {
+            DateTime.TryParseExact(document.DocumentDate, "MM/dd/yyyy", 
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime docDate);
+
             DocumentModel docModel = new DocumentModel
             {
                 Id = document.Id,
                 DocumentName = document.DocumentName,
                 OriginalDocumentName = document.OriginalDocumentName,
-                DocumentDate = document.DocumentDate,
-                UserId = _userService.GetAllowedUser(document.UserName).Id
+                DocumentDate = docDate,
+                //UserId = _userService.GetAllowedUser(document.UserName).Id
+                UserId = _accountService.LoggedInUser.Id
             };
 
             _ocrService.DoOcr(docModel);

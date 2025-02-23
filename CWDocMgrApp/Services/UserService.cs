@@ -21,7 +21,7 @@ namespace CWDocMgrApp.Services
 
         public UserModel GetAllowedUser(string userName)
         {
-            UserModel user = _context.Users.Where(u => u.UserName == userName).FirstOrDefault();
+            UserModel user = _context.Users.Where(user => user.UserName == userName).FirstOrDefault();
             return user;
         }
 

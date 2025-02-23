@@ -15,5 +15,6 @@ namespace DocMgrLib.Extensions
             services.AddAutoMapper(typeof(MappingProfile));
             return services;
         }
+
     }
 }

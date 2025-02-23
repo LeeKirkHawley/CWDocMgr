@@ -207,7 +207,7 @@ namespace DocMgrLib.Services
                     UserName = user.UserName,
                     OriginalDocumentName = originalFileName,
                     DocumentName = fileName,
-                    DocumentDate = DateTime.Now.Ticks
+                    DocumentDate = DateTime.Now.ToString("MM/dd/yyyy")
                 };
 
                 collection.Add(doc);

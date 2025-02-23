@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CWDocMgrApp.Services;
 using DocMgrLib.Data;
+using DocMgrLib.Extensions;
 using DocMgrLib.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,8 +30,12 @@ namespace CWDocMgrApp
             Configuration = builder.Build();
             services.AddSingleton(Configuration);
 
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlite());
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite());
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                      .EnableSensitiveDataLogging()
+                      .LogTo(Console.WriteLine, LogLevel.Information));
 
             services.AddDocMgrLibAutoMapper();
 
